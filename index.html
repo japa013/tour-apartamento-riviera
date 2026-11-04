@@ -456,6 +456,7 @@ body.in3d .pop{display:none}
                '360'   → panorama equiretangular 2:1. Arrasta-se em todas as direções.
      imagem    caminho do arquivo
      fov       (só 'foto') abertura horizontal da câmera do render, em graus (~70–90)
+     foco      ponto da imagem que fica no centro em tela cheia { x, y } de 0 a 1
      planta    { x, y, dir } posição do observador na planta (metros) e direção do olhar
                (dir em graus: 0 = direita, 90 = baixo, -90 = cima)
      hotspots  lista de pontos:
@@ -534,6 +535,7 @@ var TOUR = {
   vistas: [
     {
       id: 'jantar', nome: 'Sala de Jantar', area: 'jantar', tipo: 'foto', imagem: 'fotos/jantar.jpg', fov: 82,
+      foco: { x: 0.5, y: 0.5 },
       planta: { x: 4.2, y: 4.3, dir: 158 },
       hotspots: [
         { tipo: 'info', x: 0.31, y: 0.27, titulo: 'Pendente em fibra natural',
@@ -549,6 +551,7 @@ var TOUR = {
     },
     {
       id: 'estar', nome: 'Sala de Estar', area: 'estar', tipo: 'foto', imagem: 'fotos/estar.jpg', fov: 82,
+      foco: { x: 0.55, y: 0.42 },
       planta: { x: 3.6, y: 7.6, dir: -96 },
       hotspots: [
         { tipo: 'info', x: 0.765, y: 0.22, titulo: 'McLaren de Fórmula 1',
@@ -565,6 +568,7 @@ var TOUR = {
     },
     {
       id: 'tv', nome: 'Painel da TV', area: 'estar', tipo: 'foto', imagem: 'fotos/tv.jpg', fov: 78,
+      foco: { x: 0.5, y: 0.45 },
       planta: { x: 4.1, y: 2.4, dir: 180 },
       hotspots: [
         { tipo: 'info', x: 0.775, y: 0.2, titulo: 'Cristaleira iluminada',
@@ -581,6 +585,7 @@ var TOUR = {
     },
     {
       id: 'circulacao', nome: 'Circulação', area: 'jantar', tipo: 'foto', imagem: 'fotos/circulacao.jpg', fov: 80,
+      foco: { x: 0.5, y: 0.48 },
       planta: { x: 0.95, y: 3.2, dir: 84 },
       hotspots: [
         { tipo: 'info', x: 0.67, y: 0.36, titulo: 'Marcenaria integrada',
@@ -594,6 +599,7 @@ var TOUR = {
     },
     {
       id: 'ilha', nome: 'Ilha da Cozinha', area: 'cozinha', tipo: 'foto', imagem: 'fotos/ilha.jpg', fov: 82,
+      foco: { x: 0.5, y: 0.5 },
       planta: { x: 0.95, y: 4.9, dir: 66 },
       hotspots: [
         { tipo: 'info', x: 0.6, y: 0.62, titulo: 'Ilha em cascata',
@@ -609,6 +615,7 @@ var TOUR = {
     },
     {
       id: 'cozinha', nome: 'Cozinha', area: 'cozinha', tipo: 'foto', imagem: 'fotos/cozinha.jpg', fov: 84,
+      foco: { x: 0.45, y: 0.55 },
       planta: { x: 3.4, y: 9.9, dir: -112 },
       hotspots: [
         { tipo: 'info', x: 0.82, y: 0.46, titulo: 'Cooktop e coifa',
@@ -624,6 +631,7 @@ var TOUR = {
     },
     {
       id: 'adega', nome: 'Adega & Entrada', area: 'cozinha', tipo: 'foto', imagem: 'fotos/adega.jpg', fov: 82,
+      foco: { x: 0.5, y: 0.45 },
       planta: { x: 1.0, y: 6.3, dir: 14 },
       hotspots: [
         { tipo: 'info', x: 0.55, y: 0.3, titulo: 'Adega de parede',
@@ -1320,6 +1328,7 @@ function makeSlide(v, im){
   stage.appendChild(el);
   layoutSlide(S);
   S.z = S.zT = S.zFill;
+  focusPan(S);
   return S;
 }
 /* tamanho base: no computador a imagem aparece inteira; no celular (retrato) preenche a altura e desliza para os lados */
@@ -1333,6 +1342,9 @@ function layoutSlide(S){
   S.wrap.style.marginLeft = (-S.w/2) + 'px'; S.wrap.style.marginTop = (-S.h/2) + 'px';
   S.zMax = S.zFill*3;
 }
+/* centraliza o ponto de foco da foto (TOUR.vistas[].foco) */
+function focusAt(S){ var f = S.v.foco || { x:0.5, y:0.5 }, sc = S.z*(1 + S.kb); return { x:-(f.x - 0.5)*S.w*sc, y:-(f.y - 0.5)*S.h*sc }; }
+function focusPan(S){ var p = focusAt(S); S.ox = p.x; S.oy = p.y; clampPan(S); }
 function clampPan(S){
   var vw = window.innerWidth, vh = window.innerHeight, sc = S.z*(1 + S.kb);
   var mx = Math.max(0, (S.w*sc - vw)/2), my = Math.max(0, (S.h*sc - vh)/2);
@@ -1341,7 +1353,9 @@ function clampPan(S){
 }
 function applySlide(S){
   var sc = S.z*(1 + S.kb);
-  S.wrap.style.transform = 'perspective(1600px) translate3d(' + S.ox.toFixed(2) + 'px,' + S.oy.toFixed(2) + 'px,0) rotateY(' + (S.tx*2.4).toFixed(3) + 'deg) rotateX(' + (-S.ty*1.8).toFixed(3) + 'deg) scale(' + sc.toFixed(4) + ')';
+  // perspectiva: leve giro + deslocamento contrário ao olhar, como uma câmera que acompanha o mouse
+  var px = -S.tx*Math.min(26, window.innerWidth*0.018), py = -S.ty*Math.min(18, window.innerHeight*0.018);
+  S.wrap.style.transform = 'perspective(1300px) translate3d(' + (S.ox + px).toFixed(2) + 'px,' + (S.oy + py).toFixed(2) + 'px,0) rotateY(' + (S.tx*3.6).toFixed(3) + 'deg) rotateX(' + (-S.ty*2.6).toFixed(3) + 'deg) scale(' + sc.toFixed(4) + ')';
   S.hsBox.style.setProperty('--inv', (1/sc).toFixed(4));
   S.el.style.opacity = S.op;
 }
@@ -1431,12 +1445,12 @@ function goTo(id, from){
     prog.classList.remove('on');
     if (tr) return;
     inc = makeSlide(views[id], im);
-    inc.op = 0; inc.z = inc.zFill*(REDUCE ? 1 : 1.14); inc.zT = inc.zFill; applySlide(inc);
+    inc.op = 0; inc.z = inc.zFill*(REDUCE ? 1 : 1.18); inc.zT = inc.zFill; focusPan(inc); applySlide(inc);
     cur.el.classList.add('leaving');
     // aproxima em direção ao ponto clicado, como quem caminha até lá
     var fx = 0, fy = 0;
     if (from){ var sc = cur.z*(1 + cur.kb); fx = (from.h.x - 0.5)*cur.w*sc + cur.ox; fy = (from.h.y - 0.5)*cur.h*sc + cur.oy; }
-    tr = { t0:performance.now(), dur: REDUCE ? 300 : 1250, z0:cur.z, ox0:cur.ox, oy0:cur.oy, fx:fx, fy:fy };
+    tr = { t0:performance.now(), dur: REDUCE ? 300 : 1600, z0:cur.z, ox0:cur.ox, oy0:cur.oy, fx:fx, fy:fy };
     showCaption(views[id]);
   });
 }
@@ -1449,11 +1463,11 @@ function stepTransition(now){
   cur.z = z1; cur.ox = tr.fx - (tr.fx - tr.ox0)*r; cur.oy = tr.fy - (tr.fy - tr.oy0)*r;
   cur.op = 1 - ease(clamp((p - 0.25)/0.6, 0, 1))*0.999;
   inc.op = ease(clamp((p - 0.2)/0.55, 0, 1));
-  inc.z = inc.zFill*((REDUCE ? 1 : 1.14) - (REDUCE ? 0 : 0.14)*ease(clamp((p - 0.2)/0.8, 0, 1)));
+  inc.z = inc.zFill*((REDUCE ? 1 : 1.18) - (REDUCE ? 0 : 0.18)*ease(clamp((p - 0.2)/0.8, 0, 1))); var fp = focusAt(inc); inc.ox = fp.x; inc.oy = fp.y; clampPan(inc);
   if (p >= 1){
     cur.el.remove();
     cur = inc; inc = null; tr = null;
-    cur.op = 1; cur.z = cur.zT = cur.zFill;
+    cur.op = 1; cur.z = cur.zT = cur.zFill; driftT0 = performance.now();
     updateUI();
   }
 }
@@ -1468,12 +1482,12 @@ function jumpTo(id){
 
 /* ---------- interação ---------- */
 var pointers = new Map(), drag = null, pinch = null, editMode = false, auto = true, moved = false;
-var mouse = { x:0, y:0, on:false };
+var mouse = { x:0, y:0, on:false }, lastInput = 0, driftT0 = 0;
 stage.addEventListener('pointerdown', function(e){
   if (!cur || tr) return;
   stage.setPointerCapture(e.pointerId);
   pointers.set(e.pointerId, { x:e.clientX, y:e.clientY });
-  auto = false; hideHint(); moved = false;
+  auto = false; lastInput = performance.now(); hideHint(); moved = false;
   if (pointers.size === 1){ drag = { lx:e.clientX, ly:e.clientY, lt:performance.now(), moved:0 }; cur.vx = cur.vy = 0; }
   else if (pointers.size === 2){ var pts = Array.from(pointers.values()); pinch = { d:dist(pts), z:cur.zT, cx:(pts[0].x + pts[1].x)/2, cy:(pts[0].y + pts[1].y)/2 }; drag = null; }
 });
@@ -1510,7 +1524,7 @@ function endPointer(e){
 }
 stage.addEventListener('pointerup', endPointer);
 stage.addEventListener('pointercancel', endPointer);
-stage.addEventListener('wheel', function(e){ e.preventDefault(); if (!cur || tr) return; auto = false; zoomAt(cur.zT*Math.pow(1.0016, -e.deltaY), e.clientX, e.clientY); }, { passive:false });
+stage.addEventListener('wheel', function(e){ e.preventDefault(); if (!cur || tr) return; auto = false; lastInput = performance.now(); zoomAt(cur.zT*Math.pow(1.0016, -e.deltaY), e.clientX, e.clientY); }, { passive:false });
 stage.addEventListener('dblclick', function(e){ if (!cur || tr) return; zoomAt(cur.zT > cur.zFill*1.3 ? cur.zFill : cur.zFill*2, e.clientX, e.clientY); });
 /* zoom mantendo o ponto (px, py) da tela no lugar */
 function zoomAt(z, px, py, instant){
@@ -1725,14 +1739,20 @@ function frame(now){
       // perspectiva que acompanha o mouse (computador) ou deriva lenta (celular / sem interação)
       var tt = (now - t0)/1000;
       if (FINE && mouse.on && !drag && !editMode){ S.txT = mouse.x; S.tyT = mouse.y; }
-      else if (auto && !REDUCE){ S.txT = Math.sin(tt*0.22)*0.6; S.tyT = Math.sin(tt*0.15 + 1)*0.35; }
+      else if (auto && !REDUCE){ S.txT = Math.sin(tt*0.2)*0.55; S.tyT = Math.sin(tt*0.14 + 1)*0.3; }
       else { S.txT = 0; S.tyT = 0; }
       if (REDUCE){ S.txT = S.tyT = 0; }
       S.tx += (S.txT - S.tx)*Math.min(1, dt/420); S.ty += (S.tyT - S.ty)*Math.min(1, dt/420);
       // respiração suave da imagem
       S.kb = (REDUCE || !started) ? 0 : 0.012 + 0.012*Math.sin(tt*0.18);
-      // no celular, sem interação, desliza devagar pela imagem
-      if (auto && !REDUCE && started && !FINE){ var mx = Math.max(0, (S.w*S.z*(1 + S.kb) - window.innerWidth)/2); S.ox += (Math.sin(tt*0.12)*mx*0.85 - S.ox)*0.02; }
+      // sem interação: câmera passeia devagar pela foto, a partir do ponto de foco
+      if (!auto && !drag && !pinch && !popO && now - lastInput > 9000 && Math.abs(S.zT - S.zFill) < 0.02){ auto = true; driftT0 = now; }
+      if (auto && !REDUCE && started){
+        var sc2 = S.z*(1 + S.kb), mx = Math.max(0, (S.w*sc2 - window.innerWidth)/2), my = Math.max(0, (S.h*sc2 - window.innerHeight)/2), fc = focusAt(S), td = (now - driftT0)/1000;
+        var k2 = Math.min(1, td/3)*0.018;
+        S.ox += (clamp(fc.x + Math.sin(td*0.11)*mx*0.7, -mx, mx) - S.ox)*k2;
+        S.oy += (clamp(fc.y + Math.sin(td*0.08 + 0.6)*my*0.55, -my, my) - S.oy)*k2;
+      }
       clampPan(S);
     }
     stepTransition(now);
