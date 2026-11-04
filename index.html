@@ -1,0 +1,1754 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Tour virtual do Apartamento Riviera — Riviera de São Lourenço, Módulo 07. Projeto de interiores Projects Arquitetura, arquiteto Tiago Agustinho.">
+<meta property="og:title" content="Apartamento Riviera · Tour virtual">
+<meta property="og:description" content="Projeto de interiores Projects Arquitetura · Riviera de São Lourenço, Módulo 07.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#0a0a0b">
+<style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Apartamento Riviera</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Italiana&family=Jost:wght@200;300;400;500&family=Didact+Gothic&family=IBM+Plex+Mono:wght@400&display=swap">
+<style>
+/* Layout: tela única imersiva; interface em quatro cantos, quase invisível. Tema escuro deliberado. */
+:root{
+  --ink:#0a0a0b;
+  --veil:rgba(10,10,11,.66);
+  --bone:#ece9e3;
+  --mute:rgba(236,233,227,.6);
+  --faint:rgba(236,233,227,.34);
+  --line:rgba(236,233,227,.16);
+  --line-2:rgba(236,233,227,.38);
+  --display:'Italiana','Didot','Bodoni 72',Georgia,serif;
+  --sans:'Jost','Futura','Avenir Next','Helvetica Neue',Arial,sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,Menlo,Consolas,monospace;
+  --ease:cubic-bezier(.22,.61,.36,1);
+  --gx:max(16px, env(safe-area-inset-left, 0px));
+  --gr:max(16px, env(safe-area-inset-right, 0px));
+  --gt:env(safe-area-inset-top, 0px);
+  --gb:env(safe-area-inset-bottom, 0px);
+  color-scheme:dark;
+}
+html,body{height:100%}
+body{
+  background:var(--ink);color:var(--bone);font-family:var(--sans);font-weight:300;
+  overflow:hidden;-webkit-font-smoothing:antialiased;user-select:none;-webkit-user-select:none;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));
+  -webkit-tap-highlight-color:transparent;
+}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;padding:0}
+button:focus-visible,[tabindex]:focus-visible{outline:1px solid var(--bone);outline-offset:3px}
+
+#stage{position:fixed;inset:0;z-index:0;touch-action:none;cursor:grab;background:var(--ink)}
+#stage.dragging{cursor:grabbing}
+#stage{overflow:hidden}
+.slide{position:absolute;inset:0;will-change:opacity}
+.slide-bg{position:absolute;inset:-80px;background-size:cover;background-position:center;filter:blur(40px) brightness(.5) saturate(1.15);transform:scale(1.08)}
+.slide-img{position:absolute;left:50%;top:50%;transform-origin:50% 50%;will-change:transform;box-shadow:0 40px 120px rgba(0,0,0,.5)}
+.slide-img img{display:block;width:100%;height:100%;user-select:none;-webkit-user-select:none;-webkit-user-drag:none;pointer-events:none}
+.slide-hs{position:absolute;inset:0;transition:opacity .4s var(--ease)}
+.slide-hs .hs{transform:scale(var(--inv,1));will-change:auto}
+.hs-in{position:relative;width:100%;height:100%;display:grid;place-items:center}
+.slide.leaving .slide-hs{opacity:0}
+body.is-dragging .slide-hs{opacity:.5}
+.shade{position:fixed;inset:0;pointer-events:none;z-index:1;
+  background:linear-gradient(180deg,rgba(0,0,0,.42) 0%,rgba(0,0,0,0) 22%,rgba(0,0,0,0) 72%,rgba(0,0,0,.5) 100%);
+  transition:opacity .8s var(--ease)}
+
+/* ---------- interface ---------- */
+.chrome{transition:opacity .7s var(--ease)}
+body.is-idle .chrome{opacity:.28}
+body.is-dragging .chrome{opacity:.06}
+body.is-dragging .shade{opacity:.4}
+body.is-idle .chrome:hover,body.is-idle .chrome:focus-within{opacity:1}
+
+.brand{position:fixed;z-index:5;top:calc(var(--gt) + 28px);left:calc(var(--gx) + 16px);pointer-events:none}
+.brand .eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--faint)}
+.brand h1{margin:10px 0 0;font-family:var(--sans);font-weight:400;font-size:15px;letter-spacing:.34em;text-transform:uppercase}
+.brand .sub{margin-top:6px;font-size:12px;letter-spacing:.08em;color:var(--mute)}
+
+.controls{position:fixed;z-index:5;top:calc(var(--gt) + 22px);right:calc(var(--gr) + 10px);display:flex;align-items:center;gap:2px}
+.ctl{width:40px;height:40px;display:grid;place-items:center;color:var(--mute);border-radius:50%;transition:color .3s,background-color .3s}
+.ctl:hover{color:var(--bone);background:rgba(236,233,227,.07)}
+.ctl svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:1.15;stroke-linecap:round;stroke-linejoin:round}
+.ctl-sep{width:1px;height:16px;background:var(--line);margin:0 8px}
+.ctl-text{height:40px;padding:0 14px;font-size:11px;letter-spacing:.26em;text-transform:uppercase;color:var(--mute);
+  border:1px solid var(--line);border-radius:20px;transition:color .3s,border-color .3s;display:flex;align-items:center;gap:9px}
+.ctl-text:hover,.ctl-text[aria-expanded="true"]{color:var(--bone);border-color:var(--line-2)}
+.ctl-text svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.15}
+
+.nav{position:fixed;z-index:5;left:0;right:0;bottom:calc(var(--gb) + 26px);display:flex;justify-content:center;padding:0 var(--gr) 0 var(--gx)}
+.nav ol{list-style:none;margin:0;padding:0;display:flex;gap:clamp(18px,3.4vw,44px);overflow-x:auto;scrollbar-width:none}
+.nav ol::-webkit-scrollbar{display:none}
+.nav button{position:relative;padding:10px 2px;font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--faint);white-space:nowrap;transition:color .4s var(--ease)}
+.nav button::after{content:"";position:absolute;left:50%;bottom:2px;width:0;height:1px;background:var(--bone);transition:width .6s var(--ease),left .6s var(--ease)}
+.nav button:hover{color:var(--mute)}
+.nav button[aria-current="true"]{color:var(--bone)}
+.nav button[aria-current="true"]::after{width:100%;left:0}
+
+.bearing{position:fixed;z-index:5;left:calc(var(--gx) + 16px);bottom:calc(var(--gb) + 34px);display:flex;align-items:center;gap:12px;
+  font-family:var(--mono);font-size:10px;letter-spacing:.14em;color:var(--faint);pointer-events:none}
+.bearing svg{width:26px;height:26px;overflow:visible}
+.bearing .room{color:var(--mute)}
+.bearing .sep{opacity:.5}
+
+.hint{position:fixed;z-index:4;left:50%;top:50%;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:14px;
+  font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:var(--bone);pointer-events:none;opacity:0;transition:opacity 1.2s var(--ease);text-shadow:0 1px 12px rgba(0,0,0,.5)}
+.hint.on{opacity:.85}
+.hint svg{width:46px;height:20px;stroke:var(--bone);fill:none;stroke-width:1;animation:sway 2.8s var(--ease) infinite}
+@keyframes sway{0%,100%{transform:translateX(-8px)}50%{transform:translateX(8px)}}
+
+/* ---------- hotspots ---------- */
+#hotspots{position:fixed;inset:0;z-index:3;pointer-events:none;overflow:hidden;transition:opacity .5s var(--ease)}
+#hotspots.hidden{opacity:0}
+body.is-dragging #hotspots{opacity:.55}
+.hs{position:absolute;left:0;top:0;width:44px;height:44px;margin:-22px 0 0 -22px;pointer-events:auto;display:grid;place-items:center;will-change:transform}
+.hs.off{visibility:hidden}
+.hs-info .dot{width:9px;height:9px;border-radius:50%;background:var(--bone);box-shadow:0 0 0 1px rgba(0,0,0,.18),0 0 14px rgba(0,0,0,.35);transition:transform .35s var(--ease)}
+.hs-info .ring{position:absolute;width:9px;height:9px;border-radius:50%;border:1px solid var(--bone);animation:pulse 3.2s var(--ease) infinite}
+.hs-info:hover .dot,.hs-info.active .dot{transform:scale(1.35)}
+.hs-info.active .ring{animation:none;width:24px;height:24px;opacity:.7}
+@keyframes pulse{0%{transform:scale(1);opacity:.7}70%,100%{transform:scale(3.2);opacity:0}}
+.hs-nav .ring{width:30px;height:30px;border-radius:50%;border:1px solid rgba(236,233,227,.8);background:rgba(10,10,11,.22);
+  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:grid;place-items:center;transition:transform .4s var(--ease),background-color .4s}
+.hs-nav .ring::before{content:"";width:5px;height:5px;border-radius:50%;background:var(--bone)}
+.hs-nav:hover .ring{transform:scale(1.15);background:rgba(236,233,227,.14)}
+.hs-nav .label{position:absolute;left:44px;top:50%;transform:translate(-6px,-50%);white-space:nowrap;font-size:10.5px;letter-spacing:.26em;text-transform:uppercase;
+  color:var(--bone);opacity:0;transition:opacity .4s var(--ease),transform .4s var(--ease);text-shadow:0 1px 10px rgba(0,0,0,.7);pointer-events:none}
+.hs-nav .label i{font-style:normal;color:var(--mute);margin-right:8px}
+.hs-nav:hover .label,.hs-nav:focus-visible .label{opacity:1;transform:translate(0,-50%)}
+@media (hover:none){.hs-nav .label{opacity:.92;transform:translate(0,-50%)}}
+
+/* ---------- popup de informação ---------- */
+.pop{position:fixed;z-index:6;left:0;top:0;width:min(300px,calc(100vw - 32px));background:var(--veil);
+  backdrop-filter:blur(18px) saturate(1.1);-webkit-backdrop-filter:blur(18px) saturate(1.1);border:1px solid var(--line);
+  padding:20px 20px 22px;opacity:0;transform:translateY(6px);transition:opacity .45s var(--ease),transform .45s var(--ease);pointer-events:none}
+.pop.on{opacity:1;transform:none;pointer-events:auto}
+.pop .k{font-family:var(--mono);font-size:9.5px;letter-spacing:.2em;color:var(--faint);text-transform:uppercase}
+.pop h2{margin:10px 0 0;font-weight:400;font-size:13px;letter-spacing:.3em;text-transform:uppercase;text-wrap:balance}
+.pop p{margin:12px 0 0;font-size:14px;line-height:1.6;color:var(--mute);max-width:42ch}
+.pop img{display:block;width:100%;margin-top:16px;border:1px solid var(--line)}
+.pop .cap{margin-top:8px;font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;color:var(--faint)}
+.x{position:absolute;top:10px;right:10px;width:32px;height:32px;display:grid;place-items:center;color:var(--faint);transition:color .3s}
+.x:hover{color:var(--bone)}
+.x svg{width:12px;height:12px;stroke:currentColor;stroke-width:1.2}
+
+/* ---------- sobreposições (planta, sobre) ---------- */
+.overlay{position:fixed;inset:0;z-index:8;display:flex;align-items:center;justify-content:center;
+  padding:calc(var(--gt) + 24px) var(--gr) calc(var(--gb) + 24px) var(--gx);
+  background:rgba(6,6,7,.72);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  opacity:0;visibility:hidden;transition:opacity .55s var(--ease),visibility 0s .55s}
+.overlay.on{opacity:1;visibility:visible;transition:opacity .55s var(--ease)}
+.sheet{position:relative;width:min(880px,100%);max-height:100%;overflow:auto;transform:translateY(10px);transition:transform .7s var(--ease)}
+.overlay.on .sheet{transform:none}
+.sheet-head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;padding:0 4px 18px;border-bottom:1px solid var(--line)}
+.sheet-head .k{font-family:var(--mono);font-size:10px;letter-spacing:.2em;color:var(--faint);text-transform:uppercase}
+.sheet-head h2{margin:8px 0 0;font-family:var(--display);font-weight:400;font-size:clamp(26px,4vw,38px);letter-spacing:.02em;line-height:1}
+.sheet .x{position:static;width:40px;height:40px;border:1px solid var(--line);border-radius:50%}
+.plan-wrap{padding:22px 0 6px}
+#plan{display:block;width:100%;height:auto;max-height:64vh}
+#plan text{font-family:var(--sans);user-select:none}
+.pl-room{cursor:pointer}
+.pl-room rect{fill:rgba(236,233,227,0);stroke:rgba(236,233,227,.5);transition:fill .35s}
+.pl-room:hover rect,.pl-room:focus-visible rect{fill:rgba(236,233,227,.06)}
+.pl-room.cur rect{fill:rgba(236,233,227,.1);stroke:var(--bone)}
+.pl-room:focus-visible{outline:none}
+.pl-room .n{fill:var(--mute);font-size:.36px;letter-spacing:.09px;text-transform:uppercase}
+.pl-room.cur .n{fill:var(--bone)}
+.pl-room .a{fill:var(--faint);font-family:var(--mono)!important;font-size:.28px}
+.plan-foot{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:12px 4px 0;font-family:var(--mono);font-size:10px;letter-spacing:.14em;color:var(--faint);text-transform:uppercase}
+.plan-foot b{font-weight:400;color:var(--mute)}
+
+.about{width:min(560px,100%)}
+.about p{font-size:15px;line-height:1.7;color:var(--mute);margin:22px 0 0;max-width:52ch}
+.about dl{display:grid;grid-template-columns:1fr auto;margin:26px 0 0;border-top:1px solid var(--line)}
+.about dt,.about dd{margin:0;padding:12px 0;border-bottom:1px solid var(--line);font-size:13px}
+.about dt{color:var(--mute);letter-spacing:.06em}
+.about dd{font-family:var(--mono);font-size:12px;text-align:right;font-variant-numeric:tabular-nums}
+.about h3{margin:30px 0 0;font-weight:400;font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--faint)}
+.about ul{list-style:none;margin:14px 0 0;padding:0;display:grid;gap:10px;font-size:13.5px;color:var(--mute)}
+.about li{display:flex;gap:14px;align-items:center}
+.about li span:first-child{width:34px;display:grid;place-items:center;flex:none}
+.sym-dot{width:9px;height:9px;border-radius:50%;background:var(--bone)}
+.sym-ring{width:20px;height:20px;border-radius:50%;border:1px solid var(--bone);display:grid;place-items:center}
+.sym-ring::before{content:"";width:4px;height:4px;border-radius:50%;background:var(--bone)}
+.about li.keys{display:block;line-height:2.2}.about li.keys .kbd{margin:0 6px 0 0}.about li.keys .kbd:not(:first-child){margin-left:14px}
+.kbd{font-family:var(--mono);font-size:10px;border:1px solid var(--line);padding:2px 6px;border-radius:3px;color:var(--mute)}
+
+/* ---------- abertura ---------- */
+#intro{position:fixed;inset:0;z-index:20;background:var(--ink);display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;
+  padding:calc(var(--gt) + 24px) var(--gr) calc(var(--gb) + 24px) var(--gx);transition:opacity 1.6s var(--ease),visibility 0s 1.6s}
+#intro.leave{opacity:0;visibility:hidden}
+#intro .k{font-family:var(--mono);font-size:10px;letter-spacing:.32em;text-transform:uppercase;color:var(--faint);opacity:0;animation:rise 1.4s .2s var(--ease) forwards}
+#intro h1{margin:22px 0 0;font-family:var(--display);font-weight:400;font-size:clamp(44px,9vw,104px);letter-spacing:.04em;line-height:1;opacity:0;animation:rise 1.6s .45s var(--ease) forwards}
+#intro .sub{margin-top:18px;font-size:13px;letter-spacing:.36em;text-transform:uppercase;color:var(--mute);opacity:0;animation:rise 1.4s .8s var(--ease) forwards}
+.load{width:160px;height:1px;background:var(--line);margin:56px auto 0;position:relative;overflow:hidden;opacity:0;animation:rise 1s 1.1s var(--ease) forwards}
+.load i{position:absolute;inset:0;background:var(--bone);transform-origin:left;transform:scaleX(0);transition:transform .4s linear}
+.enter{margin-top:46px;height:48px;padding:0 30px;border:1px solid var(--line-2);font-size:11px;letter-spacing:.34em;text-transform:uppercase;
+  color:var(--bone);opacity:0;pointer-events:none;transition:opacity 1s var(--ease),background-color .4s,color .4s}
+.enter.on{opacity:1;pointer-events:auto}
+.enter:hover{background:var(--bone);color:var(--ink)}
+.load.done{opacity:0!important;transition:opacity .6s}
+/* ---------- crédito da agência ---------- */
+.credit{display:inline-flex;align-items:center;gap:14px;color:var(--faint);text-decoration:none;font-family:var(--mono);font-size:9.5px;letter-spacing:.22em;text-transform:uppercase;transition:color .3s,opacity .3s}
+.credit img{display:block;height:26px;width:auto;opacity:.82;transition:opacity .3s}
+.credit:hover{color:var(--mute)}
+.credit:hover img{opacity:1}
+.credit-fixed{position:fixed;z-index:5;right:calc(var(--gr) + 16px);bottom:calc(var(--gb) + 30px)}
+.credit-fixed img{height:20px}
+.credit-fixed span{display:none}
+.intro-credit{position:absolute;left:0;right:0;bottom:calc(var(--gb) + 58px);display:flex;justify-content:center}
+.intro-credit .credit{flex-direction:column;gap:12px}
+.intro-credit .credit img{height:34px}
+.about-credit{margin-top:30px;padding-top:20px;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+.about-credit .handle{font-family:var(--mono);font-size:11px;letter-spacing:.08em;color:var(--mute);text-decoration:none;border-bottom:1px solid var(--line);padding-bottom:2px}
+.about-credit .handle:hover{color:var(--bone);border-color:var(--line-2)}
+@media (max-width:1100px){ .credit-fixed{display:none} }
+@media (max-width:720px){
+  .intro-credit{bottom:calc(var(--gb) + 54px)}
+}
+.intro-foot{position:absolute;bottom:calc(var(--gb) + 26px);left:0;right:0;font-family:var(--mono);font-size:10px;letter-spacing:.2em;color:var(--faint);text-transform:uppercase}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+/* ---------- legenda de ambiente e avisos ---------- */
+.caption{position:fixed;z-index:4;left:0;right:0;top:50%;transform:translateY(-50%);text-align:center;pointer-events:none;opacity:0;transition:opacity .9s var(--ease)}
+.caption.on{opacity:1}
+.caption .k{font-family:var(--mono);font-size:10px;letter-spacing:.3em;color:var(--mute);text-transform:uppercase}
+.caption h2{margin:12px 0 0;font-family:var(--display);font-weight:400;font-size:clamp(34px,6vw,64px);letter-spacing:.04em;text-shadow:0 2px 30px rgba(0,0,0,.45)}
+.progress{position:fixed;z-index:9;top:0;left:0;right:0;height:1px;pointer-events:none}
+.progress i{display:block;height:100%;width:100%;background:var(--bone);transform-origin:left;transform:scaleX(0);opacity:0;transition:opacity .4s}
+.progress.on i{opacity:.8}
+.toast{position:fixed;z-index:9;left:50%;top:calc(var(--gt) + 90px);transform:translate(-50%,-6px);background:var(--veil);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  border:1px solid var(--line);padding:10px 12px 10px 16px;display:flex;gap:14px;align-items:center;font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;
+  opacity:0;pointer-events:none;transition:opacity .35s,transform .35s;max-width:calc(100vw - 32px)}
+.toast.on{opacity:1;pointer-events:auto;transform:translate(-50%,0)}
+.toast button{font-family:var(--sans);font-size:10px;letter-spacing:.2em;text-transform:uppercase;border:1px solid var(--line-2);padding:7px 10px}
+.edit-badge{position:fixed;z-index:9;left:50%;top:calc(var(--gt) + 30px);transform:translateX(-50%);font-family:var(--mono);font-size:10px;letter-spacing:.24em;color:var(--bone);border:1px dashed var(--line-2);padding:6px 10px;text-transform:uppercase}
+.error{position:fixed;inset:0;z-index:30;display:grid;place-items:center;text-align:center;padding:24px;background:var(--ink);color:var(--mute);font-size:14px;line-height:1.7}
+
+/* ---------- mobile ---------- */
+@media (max-width:720px){
+  .brand{top:calc(var(--gt) + 18px);left:var(--gx)}
+  .brand h1{font-size:13px;letter-spacing:.28em;margin-top:8px}
+  .brand .sub{font-size:11px}
+  .controls{top:auto;bottom:calc(var(--gb) + 84px);right:calc(var(--gr) - 4px);flex-direction:column;gap:4px}
+  .ctl{width:44px;height:44px;background:rgba(10,10,11,.28);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+  .ctl-sep{width:16px;height:1px;margin:4px 0}
+  .ctl-text{position:fixed;top:calc(var(--gt) + 18px);right:var(--gr);height:40px;background:rgba(10,10,11,.28);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+  .ctl.zoom{display:none}
+  .nav{bottom:calc(var(--gb) + 14px);justify-content:flex-start;padding:0}
+  .nav ol{padding:0 var(--gr) 0 var(--gx);gap:22px;width:100%;mask-image:linear-gradient(90deg,transparent 0,#000 16px,#000 calc(100% - 28px),transparent)}
+  .nav button{font-size:11px;padding:14px 2px}
+  .bearing{display:none}
+  .pop{left:var(--gx)!important;right:var(--gr);top:auto!important;bottom:calc(var(--gb) + 70px);width:auto}
+  .pop img{max-height:28vh;object-fit:cover}
+  #plan{max-height:58vh}
+}
+/* ---------- maquete 3D ---------- */
+[hidden]{display:none!important}
+#m3d{position:fixed;inset:0;z-index:4;background:#0b0b0c;opacity:0;transition:opacity .7s var(--ease)}
+#m3d.on{opacity:1}
+#m3d::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:1;background:linear-gradient(180deg,rgba(0,0,0,.5) 0,rgba(0,0,0,0) 170px,rgba(0,0,0,0) calc(100% - 190px),rgba(0,0,0,.55) 100%)}
+#m3dMarks,.m3d-seg,.m3d-real,.m3d-ui,.m3d-close{z-index:2}
+#m3dCanvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none;cursor:grab}
+#m3dCanvas:active{cursor:grabbing}
+#m3dMarks{position:absolute;inset:0;pointer-events:none;overflow:hidden;transition:opacity .4s}
+#m3dMarks.hidden{opacity:0}
+#m3dMarks.hidden .m3d-mk{pointer-events:none}
+.m3d-mk{position:absolute;left:0;top:0;width:44px;height:44px;margin:-22px 0 0 -22px;display:grid;place-items:center;pointer-events:auto;will-change:transform}
+.m3d-mk .n{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;border:1px solid rgba(236,233,227,.85);background:rgba(10,10,11,.55);
+  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);font-family:var(--mono);font-size:10.5px;color:var(--bone);transition:background-color .3s,color .3s,transform .3s var(--ease)}
+.m3d-mk .l{position:absolute;left:44px;top:50%;transform:translate(-6px,-50%);white-space:nowrap;font-size:10.5px;letter-spacing:.24em;text-transform:uppercase;color:var(--bone);
+  opacity:0;transition:opacity .35s,transform .35s var(--ease);text-shadow:0 1px 10px rgba(0,0,0,.8);pointer-events:none}
+.m3d-mk:hover .n,.m3d-mk:focus-visible .n{background:var(--bone);color:var(--ink);transform:scale(1.1)}
+.m3d-mk:hover .l,.m3d-mk:focus-visible .l{opacity:1;transform:translate(0,-50%)}
+.m3d-mk.cur .n{background:var(--bone);color:var(--ink)}
+@media (hover:none){.m3d-mk .l{opacity:.85;transform:translate(0,-50%)}}
+.m3d-ui{position:absolute;left:0;right:0;bottom:calc(var(--gb) + 30px);text-align:center;pointer-events:none;padding:0 var(--gr) 0 var(--gx)}
+.m3d-k{font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:var(--bone)}
+.m3d-hint{margin-top:10px;font-family:var(--mono);font-size:10px;letter-spacing:.12em;color:var(--faint)}
+.m3d-close{position:absolute;top:calc(var(--gt) + 22px);right:calc(var(--gr) + 10px);height:40px;padding:0 16px 0 14px;display:flex;align-items:center;gap:10px;
+  border:1px solid var(--line-2);border-radius:20px;font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--bone);background:rgba(10,10,11,.4);transition:background-color .3s,color .3s}
+.m3d-close:hover{background:var(--bone);color:var(--ink)}
+.m3d-close svg{width:11px;height:11px;stroke:currentColor;stroke-width:1.3}
+.m3d-seg{position:absolute;left:50%;top:calc(var(--gt) + 22px);transform:translateX(-50%);display:flex;border:1px solid var(--line-2);border-radius:20px;padding:3px;background:rgba(10,10,11,.45);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.m3d-seg button{height:32px;padding:0 16px;border-radius:16px;font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--mute);transition:background-color .3s,color .3s;white-space:nowrap}
+.m3d-seg button[aria-pressed="true"]{background:var(--bone);color:var(--ink)}
+.m3d-seg button:not([aria-pressed="true"]):hover{color:var(--bone)}
+#m3d[data-mode="flying"] .m3d-seg{opacity:.5;pointer-events:none}
+.m3d-real{position:absolute;left:50%;bottom:calc(var(--gb) + 92px);transform:translateX(-50%);display:flex;align-items:center;gap:14px;padding:8px 8px 8px 18px;border:1px solid var(--line);
+  background:rgba(10,10,11,.6);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);white-space:nowrap}
+.m3d-real .k{font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--faint)}
+.m3d-real .nm{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--bone)}
+.m3d-real button{height:34px;padding:0 14px;background:var(--bone);color:var(--ink);font-size:10.5px;letter-spacing:.2em;text-transform:uppercase}
+#m3dMarks.floor .m3d-mk .n{background:rgba(10,10,11,.35)}
+@media (max-width:720px){
+  .m3d-seg{top:auto;bottom:calc(var(--gb) + 70px)}
+  .m3d-real{bottom:calc(var(--gb) + 122px);padding-left:12px}
+  .m3d-real .k{display:none}
+}
+body.in3d .controls,body.in3d .nav,body.in3d .bearing,body.in3d #hotspots,body.in3d .hint{opacity:0!important;pointer-events:none}
+body.in3d .pop{display:none}
+@media (max-width:720px){
+  .ctl-text.ctl-3d{right:calc(var(--gr) + 112px)}
+  .m3d-close{top:calc(var(--gt) + 18px);right:var(--gr);padding:0 12px}
+  .m3d-close .t-long{display:none}
+  .m3d-ui{bottom:calc(var(--gb) + 20px)}
+  .m3d-hint{font-size:9.5px;letter-spacing:.06em}
+}
+/* logo Projects (vetorial) */
+:root{--wine:#b0466b}
+.pj-logo{display:inline-flex;flex-direction:column;line-height:1;font-size:28px;color:var(--bone)}
+.pj-w{font-family:'Jost','Futura','Century Gothic',sans-serif;font-weight:200;font-size:1em;letter-spacing:.07em;margin-right:-.07em;
+  background:linear-gradient(180deg,var(--bone) 0 54%,var(--wine) 54% 62%,var(--bone) 62% 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.pj-s{font-family:'Didact Gothic','Century Gothic','Avenir',sans-serif;font-size:.36em;letter-spacing:.04em;color:var(--mute);margin-top:.34em;white-space:nowrap}
+.brand-logo{text-decoration:none}
+.intro-logo .pj-logo{font-size:56px}
+.client-row .pj-logo{font-size:36px}
+@media (max-width:720px){ .brand-logo .pj-logo{font-size:22px} .intro-logo .pj-logo{font-size:44px} }
+/* ---------- marcas e ajustes do modo foto ---------- */
+.brand{pointer-events:auto}
+.brand-logo{display:block;margin-bottom:16px}
+.brand-logo img{display:block;height:30px;width:auto;opacity:.92}
+.brand h1{margin-top:0}
+.intro-logo{display:block;margin:0 auto 40px;opacity:0;animation:rise 1.4s .05s var(--ease) forwards}
+.intro-logo img{display:block;height:58px;width:auto;margin:0 auto}
+.about-d p{font-size:15px;line-height:1.7;color:var(--mute);margin:18px 0 0;max-width:56ch}
+.about-d p:first-child{margin-top:22px}
+.client-row{display:flex;align-items:center;gap:22px;margin-top:28px;padding:20px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);flex-wrap:wrap}
+.client-row img{display:block;height:40px;width:auto}
+.client-row .lema{font-family:var(--display);font-size:19px;letter-spacing:.02em;color:var(--bone)}
+.client-row .handle,.about-credit .handle{display:inline-block;margin-top:6px;font-family:var(--mono);font-size:11px;letter-spacing:.08em;color:var(--mute);text-decoration:none;border-bottom:1px solid var(--line);padding-bottom:2px}
+.client-row .handle:hover{color:var(--bone);border-color:var(--line-2)}
+.bearing .vp-dot{width:7px;height:7px;border-radius:50%;background:var(--bone);box-shadow:0 0 0 4px rgba(236,233,227,.12)}
+.bearing{font-size:10.5px}
+.bearing .room{color:var(--bone);text-transform:uppercase;letter-spacing:.2em}
+.hs-nav.flip .label{left:auto;right:44px;transform:translate(6px,-50%)}
+.hs-nav.flip:hover .label,.hs-nav.flip:focus-visible .label{transform:translate(0,-50%)}
+@media (hover:none){.hs-nav.flip .label{transform:translate(0,-50%)}}
+.pl-vp{cursor:pointer}
+.pl-vp circle{fill:#0a0a0b;stroke:rgba(236,233,227,.6);stroke-width:.03;transition:fill .3s}
+.pl-vp .num{fill:var(--mute);font-family:var(--mono)!important;font-size:.2px}
+.pl-vp:hover circle,.pl-vp:focus-visible circle{fill:rgba(236,233,227,.22)}
+.pl-vp.cur circle{fill:var(--bone);stroke:var(--bone)}
+.pl-vp.cur .num{fill:var(--ink)}
+.pl-vp:focus-visible{outline:none}
+.pl-room .n{font-size:.3px}
+@media (max-width:720px){
+  .brand-logo img{height:24px}
+  .brand-logo{margin-bottom:10px}
+  .intro-logo img{height:46px}
+  .intro-logo{margin-bottom:30px}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+}
+</style>
+
+</head>
+<body>
+<div id="stage" aria-label="Visualização do ambiente. Arraste para olhar ao redor."></div>
+<div class="shade"></div>
+<div id="hotspots"></div>
+
+<a class="credit credit-fixed chrome" href="https://www.instagram.com/vitoriopublicidade/" target="_blank" rel="noopener" aria-label="Vitório Publicidade no Instagram"><span>Desenvolvido por</span><img src="img/logo-vitorio.png" alt="Vitório Publicidade"></a>
+<header class="brand chrome">
+  <a class="logo-cliente-link brand-logo" target="_blank" rel="noopener"><span class="pj-logo" role="img" aria-label="Projects Arquitetura &amp; Construção"><span class="pj-w" aria-hidden="true">PROJECTS</span><span class="pj-s" aria-hidden="true">Arquitetura &amp; Construção</span></span></a>
+  <h1 id="b-nome">Apartamento Riviera</h1>
+  <div class="sub" id="b-sub">Projeto Residencial</div>
+</header>
+
+<div class="controls chrome" role="toolbar" aria-label="Controles do tour">
+  <button class="ctl zoom" id="zin" type="button" aria-label="Aproximar" title="Aproximar"><svg viewBox="0 0 24 24"><path d="M12 6v12M6 12h12"/></svg></button>
+  <button class="ctl zoom" id="zout" type="button" aria-label="Afastar" title="Afastar"><svg viewBox="0 0 24 24"><path d="M6 12h12"/></svg></button>
+  <span class="ctl-sep zoom" aria-hidden="true"></span>
+  <button class="ctl" id="info" type="button" aria-label="Informações do projeto" title="Informações"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 11v5.5M12 7.6v.2"/></svg></button>
+  <button class="ctl" id="fs" type="button" aria-label="Tela cheia" title="Tela cheia"><svg viewBox="0 0 24 24"><path d="M4.5 9V4.5H9M15 4.5h4.5V9M19.5 15v4.5H15M9 19.5H4.5V15"/></svg></button>
+  <button class="ctl-text ctl-3d" id="m3dBtn" type="button" aria-label="Passeio 360° pelo apartamento"><svg viewBox="0 0 24 24"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M4 7.5l8 4.5 8-4.5M12 12v9"/></svg>360°</button>
+  <button class="ctl-text" id="planBtn" type="button" aria-expanded="false" aria-controls="planOv"><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4zM4 11h7V4M11 20v-5h9"/></svg>Planta</button>
+</div>
+
+<div class="bearing chrome" aria-hidden="true">
+  <span class="vp-dot"></span><span><span class="room" id="bRoom">Sala de Jantar</span> <span class="sep">/</span> <span id="bDeg">Vista 01 de 07</span></span>
+</div>
+
+<nav class="nav chrome" aria-label="Ambientes"><ol id="navList"></ol></nav>
+
+<div class="hint" id="hint"><svg viewBox="0 0 46 20"><path d="M3 10h40M8 5l-5 5 5 5M38 5l5 5-5 5"/></svg>Arraste para explorar · afaste para ver a foto inteira</div>
+<div class="caption" id="caption"><div class="k" id="capK">Ambiente</div><h2 id="capN">Sala de Estar</h2></div>
+
+<div class="pop" id="pop" role="dialog" aria-modal="false" aria-labelledby="popT">
+  <button class="x" id="popX" type="button" aria-label="Fechar"><svg viewBox="0 0 12 12"><path d="M1 1l10 10M11 1L1 11"/></svg></button>
+  <div class="k" id="popK">Detalhe</div>
+  <h2 id="popT"></h2>
+  <p id="popD"></p>
+  <img id="popI" alt="" hidden>
+</div>
+
+<div class="overlay" id="planOv" role="dialog" aria-modal="true" aria-labelledby="planTitle">
+  <div class="sheet">
+    <div class="sheet-head">
+      <div><div class="k" id="planK">Navegação</div><h2 id="planTitle">Planta baixa</h2></div>
+      <button class="x" type="button" data-close aria-label="Fechar planta"><svg viewBox="0 0 12 12"><path d="M1 1l10 10M11 1L1 11"/></svg></button>
+    </div>
+    <div class="plan-wrap"><svg id="plan" role="img" aria-label="Planta esquemática da área social"></svg></div>
+    <div class="plan-foot"><span>Você está em <b id="planHere">Sala de Estar</b></span><span>Planta esquemática, fora de escala · toque em um número para ir à vista</span></div>
+  </div>
+</div>
+
+<div class="overlay" id="aboutOv" role="dialog" aria-modal="true" aria-labelledby="aboutTitle">
+  <div class="sheet about">
+    <div class="sheet-head">
+      <div><div class="k" id="aboutK">Projeto Residencial</div><h2 id="aboutTitle">Casa Almeida</h2></div>
+      <button class="x" type="button" data-close aria-label="Fechar informações"><svg viewBox="0 0 12 12"><path d="M1 1l10 10M11 1L1 11"/></svg></button>
+    </div>
+    <div id="aboutD" class="about-d"></div>
+    <dl id="aboutF"></dl>
+    <div class="client-row"><a class="logo-cliente-link" target="_blank" rel="noopener"><span class="pj-logo" role="img" aria-label="Projects Arquitetura &amp; Construção"><span class="pj-w" aria-hidden="true">PROJECTS</span><span class="pj-s" aria-hidden="true">Arquitetura &amp; Construção</span></span></a><div><div class="lema" id="aboutLema"></div><a class="handle" id="aboutHandle" target="_blank" rel="noopener"></a></div></div>
+    <h3>Como navegar</h3>
+    <ul>
+      <li><span><svg width="28" height="12" viewBox="0 0 46 20" fill="none" stroke="#ece9e3"><path d="M3 10h40M8 5l-5 5 5 5M38 5l5 5-5 5"/></svg></span><span>Arraste para explorar a imagem. Role ou faça pinça para aproximar.</span></li>
+      <li><span><i class="sym-dot"></i></span><span>Pontos indicam detalhes do projeto.</span></li>
+      <li><span><i class="sym-ring"></i></span><span>Anéis levam a outro ponto de vista.</span></li>
+      <li class="keys"><span class="kbd">P</span> Planta <span class="kbd">I</span> Informações <span class="kbd">M</span> Passeio 360° <span class="kbd">F</span> Tela cheia <span class="kbd">Esc</span> Fechar</li>
+    </ul>
+    <div class="about-credit"><a class="credit" href="https://www.instagram.com/vitoriopublicidade/" target="_blank" rel="noopener"><span>Desenvolvido por</span><img src="img/logo-vitorio.png" alt="Vitório Publicidade"></a><a class="handle" href="https://www.instagram.com/vitoriopublicidade/" target="_blank" rel="noopener">@vitoriopublicidade</a></div>
+  </div>
+</div>
+
+<div id="m3d" hidden>
+  <canvas id="m3dCanvas" aria-label="Maquete 3D da área social. Arraste para girar."></canvas>
+  <div id="m3dMarks"></div>
+  <div class="m3d-seg" role="group" aria-label="Modo de visualização"><button type="button" id="m3dWalk" aria-pressed="true">Caminhar 360°</button><button type="button" id="m3dOrbit" aria-pressed="false">Maquete</button></div>
+  <div class="m3d-real" id="m3dReal" hidden><span class="k">Você está no ponto de vista</span><span class="nm" id="m3dRealName"></span><button type="button" id="m3dRealBtn">Ver imagem real</button></div>
+  <div class="m3d-ui"><div class="m3d-k">Modelo volumétrico · Área social</div><div class="m3d-hint" id="m3dHint"></div></div>
+  <button class="m3d-close" id="m3dClose" type="button"><svg viewBox="0 0 12 12"><path d="M1 1l10 10M11 1L1 11"/></svg>Voltar<span class="t-long">&nbsp;às imagens</span></button>
+</div>
+<div class="progress" id="progress"><i></i></div>
+<div class="toast" id="toast"><span id="toastT"></span><button type="button" id="toastB">Copiar</button></div>
+<div class="edit-badge" id="editBadge" hidden>Modo de edição · clique para obter a posição</div>
+
+<section id="intro">
+  <a class="logo-cliente-link intro-logo" target="_blank" rel="noopener"><span class="pj-logo" role="img" aria-label="Projects Arquitetura &amp; Construção"><span class="pj-w" aria-hidden="true">PROJECTS</span><span class="pj-s" aria-hidden="true">Arquitetura &amp; Construção</span></span></a>
+  <div class="k" id="iK">Projeto de interiores</div>
+  <h1 id="iN">Apartamento Riviera</h1>
+  <div class="sub" id="iS">Riviera de São Lourenço · Módulo 07</div>
+  <div class="load" id="load"><i></i></div>
+  <button class="enter" id="enter" type="button">Entrar no apartamento</button>
+  <div class="intro-credit"><a class="credit" href="https://www.instagram.com/vitoriopublicidade/" target="_blank" rel="noopener"><span>Desenvolvido por</span><img src="img/logo-vitorio.png" alt="Vitório Publicidade"></a></div>
+  <div class="intro-foot" id="iFoot"></div>
+</section>
+
+<!-- ===== Dados do tour (edite aqui: textos, fotos, hotspots, planta) ===== -->
+<script>
+/* ============================================================
+   CADASTRO DO TOUR — edite aqui para cada projeto.
+
+   Cada vista (ponto de vista):
+     id        identificador único (sem espaços)
+     nome      nome exibido
+     area      área da planta a que pertence (id de planta.areas)
+     tipo      'foto'  → imagem comum (render ou foto). Arrasta-se dentro do enquadramento.
+               '360'   → panorama equiretangular 2:1. Arrasta-se em todas as direções.
+     imagem    caminho do arquivo
+     fov       (só 'foto') abertura horizontal da câmera do render, em graus (~70–90)
+     planta    { x, y, dir } posição do observador na planta (metros) e direção do olhar
+               (dir em graus: 0 = direita, 90 = baixo, -90 = cima)
+     hotspots  lista de pontos:
+       { tipo:'info', x, y, titulo, texto, imagem? }
+       { tipo:'vista', x, y, destino:'id', rotulo? }
+       x e y = posição na imagem, de 0 a 1 (0,0 = canto superior esquerdo).
+       Em vistas '360' use yaw e pitch (graus) em vez de x e y.
+
+   Dica: abra o tour com #editar no fim do endereço (ou tecle E)
+   e clique em qualquer ponto da imagem para obter as coordenadas.
+   ============================================================ */
+
+var TOUR = {
+  projeto: {
+    nome: 'Apartamento Riviera',
+    local: 'Riviera de São Lourenço · Módulo 07',
+    rotulo: 'Projeto de interiores',
+    escritorio: 'Projects Arquitetura',
+    logo: 'img/logo-projects.png',
+    instagram: 'https://www.instagram.com/projectsarquitetura/',
+    arroba: '@projectsarquitetura',
+    assinatura: 'Projeto assinado pelo arquiteto Tiago Agustinho',
+    lema: 'Projetamos, construímos e valorizamos.',
+    descricao: [
+      'Um projeto de interiores autoral, onde cada detalhe foi pensado para expressar personalidade, conforto e sofisticação.',
+      'A combinação de materiais naturais, iluminação cuidadosamente planejada e elementos exclusivos cria ambientes acolhedores, com uma identidade marcante.',
+      'O destaque fica por conta da McLaren de Fórmula 1, inspirada no legado de Ayrton Senna, integrada à arquitetura como uma peça de expressão e personalidade.'
+    ],
+    ficha: [
+      ['Projeto', 'Interiores autoral'],
+      ['Arquiteto', 'Tiago Agustinho'],
+      ['Escritório', 'Projects Arquitetura'],
+      ['Local', 'Riviera de São Lourenço · Módulo 07'],
+      ['Ambientes', 'Estar, jantar e cozinha integrados']
+    ]
+  },
+
+  inicio: 'jantar',
+
+  // Navegação inferior. "inclui" = vistas que destacam o item.
+  navegacao: [
+    { rotulo: 'Sala de Estar', destino: 'estar',   inclui: ['estar', 'tv'] },
+    { rotulo: 'Jantar',        destino: 'jantar',  inclui: ['jantar', 'circulacao'] },
+    { rotulo: 'Cozinha',       destino: 'cozinha', inclui: ['cozinha', 'ilha'] },
+    { rotulo: 'Adega',         destino: 'adega',   inclui: ['adega'] }
+  ],
+
+  // Planta esquemática (metros aproximados, deduzidos das imagens). Usada também pela maquete 3D.
+  planta: {
+    titulo: 'Planta esquemática',
+    rotulo: 'Área social',
+    contorno: { x: 0, y: 0, w: 4.8, h: 11 },
+    areas: [
+      { id: 'estar',   nome: 'Estar',   x: 0,    y: 0,   w: 4.8,  h: 4.6, destino: 'estar' },
+      { id: 'jantar',  nome: 'Jantar',  x: 0,    y: 4.6, w: 4.8,  h: 2.4, destino: 'jantar' },
+      { id: 'cozinha', nome: 'Cozinha', x: 1.35, y: 7.0, w: 3.45, h: 4.0, destino: 'cozinha' }
+    ],
+    extras: [
+      { nome: 'Circulação', x: 0, y: 7.0, w: 1.35, h: 4.0 }
+    ],
+    // mobiliário desenhado em traço fino
+    moveis: [
+      { x: 3.85, y: 0.9, w: 0.87, h: 2.8, r: 0.1 },     // sofá
+      { x: 0.02, y: 1.45, w: 0.46, h: 2.3, r: 0.06 },   // rack da TV
+      { x: 0.02, y: 0.45, w: 0.44, h: 0.8 },            // cristaleira e adega
+      { x: 1.9, y: 4.75, w: 1.0, h: 2.2, r: 0.12 },     // mesa de jantar
+      { x: 1.95, y: 6.95, w: 0.9, h: 2.4 },             // ilha em cascata
+      { x: 1.4, y: 10.4, w: 2.75, h: 0.58 },            // bancada
+      { x: 4.18, y: 8.4, w: 0.6, h: 2.0 },              // coluna de eletros
+      { x: 4.72, y: 7.05, w: 0.06, h: 0.8 }             // adega de parede
+    ],
+    janela: { x1: 0.5, x2: 4.3 },
+    porta: { x: 4.8, y1: 5.6, y2: 6.5 }
+  },
+
+  vistas: [
+    {
+      id: 'jantar', nome: 'Sala de Jantar', area: 'jantar', tipo: 'foto', imagem: 'fotos/jantar.jpg', fov: 82,
+      planta: { x: 4.2, y: 4.3, dir: 158 },
+      hotspots: [
+        { tipo: 'info', x: 0.31, y: 0.27, titulo: 'Pendente em fibra natural',
+          texto: 'Peça orgânica em palha trançada sobre a mesa, trazendo textura e luz quente ao jantar.' },
+        { tipo: 'info', x: 0.36, y: 0.6, titulo: 'Mesa em madeira',
+          texto: 'Mesa em madeira natural com cantos arredondados e cadeiras estofadas em tecido claro.' },
+        { tipo: 'info', x: 0.14, y: 0.205, titulo: 'Iluminação',
+          texto: 'Perfis de LED embutidos no forro e spots direcionáveis desenham a luz de cada ambiente.' },
+        { tipo: 'vista', x: 0.66, y: 0.4, destino: 'tv', rotulo: 'Painel da TV' },
+        { tipo: 'vista', x: 0.13, y: 0.45, destino: 'ilha', rotulo: 'Cozinha' },
+        { tipo: 'vista', x: 0.92, y: 0.6, destino: 'estar' }
+      ]
+    },
+    {
+      id: 'estar', nome: 'Sala de Estar', area: 'estar', tipo: 'foto', imagem: 'fotos/estar.jpg', fov: 82,
+      planta: { x: 3.6, y: 7.6, dir: -96 },
+      hotspots: [
+        { tipo: 'info', x: 0.765, y: 0.22, titulo: 'McLaren de Fórmula 1',
+          texto: 'O destaque do projeto: uma McLaren inspirada no legado de Ayrton Senna, integrada à arquitetura como peça de expressão e personalidade.' },
+        { tipo: 'info', x: 0.84, y: 0.4, titulo: 'Parede em pedra',
+          texto: 'Revestimento em pedra natural com iluminação rasante dos spots, que valoriza a textura.' },
+        { tipo: 'info', x: 0.46, y: 0.3, titulo: 'Cortinas em voil',
+          texto: 'Tecido leve do forro ao piso, que filtra a luz natural e suaviza o ambiente.' },
+        { tipo: 'info', x: 0.475, y: 0.105, titulo: 'Climatização',
+          texto: 'Ar-condicionado cassete embutido no forro, discreto e com distribuição uniforme.' },
+        { tipo: 'vista', x: 0.29, y: 0.42, destino: 'tv', rotulo: 'Painel da TV' },
+        { tipo: 'vista', x: 0.5, y: 0.8, destino: 'jantar' }
+      ]
+    },
+    {
+      id: 'tv', nome: 'Painel da TV', area: 'estar', tipo: 'foto', imagem: 'fotos/tv.jpg', fov: 78,
+      planta: { x: 4.1, y: 2.4, dir: 180 },
+      hotspots: [
+        { tipo: 'info', x: 0.775, y: 0.2, titulo: 'Cristaleira iluminada',
+          texto: 'Marcenaria em madeira com portas de vidro e LED interno, para taças e louças.' },
+        { tipo: 'info', x: 0.855, y: 0.6, titulo: 'Adega climatizada',
+          texto: 'Adega embutida na marcenaria, ao lado do nicho para garrafas.' },
+        { tipo: 'info', x: 0.3, y: 0.2, titulo: 'Painel com frisos',
+          texto: 'Painel em tom fendi com frisos pretos e prateleira em madeira, organizando a parede da TV.' },
+        { tipo: 'info', x: 0.42, y: 0.7, titulo: 'Rack suspenso',
+          texto: 'Rack em madeira com cantos arredondados, solto do piso para dar leveza.' },
+        { tipo: 'vista', x: 0.07, y: 0.4, destino: 'ilha', rotulo: 'Cozinha' },
+        { tipo: 'vista', x: 0.55, y: 0.9, destino: 'estar' }
+      ]
+    },
+    {
+      id: 'circulacao', nome: 'Circulação', area: 'jantar', tipo: 'foto', imagem: 'fotos/circulacao.jpg', fov: 80,
+      planta: { x: 0.95, y: 3.2, dir: 84 },
+      hotspots: [
+        { tipo: 'info', x: 0.67, y: 0.36, titulo: 'Marcenaria integrada',
+          texto: 'Portas altas em tom fendi, sem puxadores, que escondem armários ao longo da circulação.' },
+        { tipo: 'info', x: 0.62, y: 0.78, titulo: 'Porcelanato claro',
+          texto: 'Piso em porcelanato de grande formato em tom areia, contínuo em toda a área social.' },
+        { tipo: 'vista', x: 0.47, y: 0.36, destino: 'cozinha' },
+        { tipo: 'vista', x: 0.86, y: 0.42, destino: 'tv', rotulo: 'Painel da TV' },
+        { tipo: 'vista', x: 0.24, y: 0.56, destino: 'jantar' }
+      ]
+    },
+    {
+      id: 'ilha', nome: 'Ilha da Cozinha', area: 'cozinha', tipo: 'foto', imagem: 'fotos/ilha.jpg', fov: 82,
+      planta: { x: 0.95, y: 4.9, dir: 66 },
+      hotspots: [
+        { tipo: 'info', x: 0.6, y: 0.62, titulo: 'Ilha em cascata',
+          texto: 'Bancada em superfície marmorizada que desce até o piso, com lateral em madeira.' },
+        { tipo: 'info', x: 0.78, y: 0.115, titulo: 'Perfil de LED',
+          texto: 'Linha de luz embutida no forro que acompanha a marcenaria da cozinha.' },
+        { tipo: 'info', x: 0.86, y: 0.5, titulo: 'Coluna de eletros',
+          texto: 'Refrigerador, forno e micro-ondas em inox, alinhados à marcenaria.' },
+        { tipo: 'vista', x: 0.55, y: 0.42, destino: 'cozinha' },
+        { tipo: 'vista', x: 0.3, y: 0.52, destino: 'adega', rotulo: 'Adega' },
+        { tipo: 'vista', x: 0.15, y: 0.76, destino: 'jantar' }
+      ]
+    },
+    {
+      id: 'cozinha', nome: 'Cozinha', area: 'cozinha', tipo: 'foto', imagem: 'fotos/cozinha.jpg', fov: 84,
+      planta: { x: 3.4, y: 9.9, dir: -112 },
+      hotspots: [
+        { tipo: 'info', x: 0.82, y: 0.46, titulo: 'Cooktop e coifa',
+          texto: 'Cooktop a gás sob coifa embutida no armário superior, com LED iluminando a bancada.' },
+        { tipo: 'info', x: 0.41, y: 0.52, titulo: 'Cuba e torneira gourmet',
+          texto: 'Cuba em inox com torneira gourmet de bica flexível.' },
+        { tipo: 'info', x: 0.5, y: 0.935, titulo: 'Rodapé iluminado',
+          texto: 'Fita de LED sob a marcenaria, que faz os armários parecerem flutuar.' },
+        { tipo: 'vista', x: 0.13, y: 0.32, destino: 'estar' },
+        { tipo: 'vista', x: 0.43, y: 0.43, destino: 'jantar' },
+        { tipo: 'vista', x: 0.66, y: 0.3, destino: 'adega', rotulo: 'Adega' }
+      ]
+    },
+    {
+      id: 'adega', nome: 'Adega & Entrada', area: 'cozinha', tipo: 'foto', imagem: 'fotos/adega.jpg', fov: 82,
+      planta: { x: 1.0, y: 6.3, dir: 14 },
+      hotspots: [
+        { tipo: 'info', x: 0.55, y: 0.3, titulo: 'Adega de parede',
+          texto: 'Garrafas expostas em hastes de madeira com iluminação pontual, transformando a parede em vitrine.' },
+        { tipo: 'info', x: 0.14, y: 0.44, titulo: 'Porta de entrada',
+          texto: 'Porta em madeira com fechadura digital, abrindo direto para a área social.' },
+        { tipo: 'vista', x: 0.88, y: 0.44, destino: 'cozinha' },
+        { tipo: 'vista', x: 0.56, y: 0.76, destino: 'ilha', rotulo: 'Ilha' },
+        { tipo: 'vista', x: 0.2, y: 0.64, destino: 'jantar' }
+      ]
+    }
+  ]
+};
+
+</script>
+<!-- ===== Maquete 3D / passeio 360° ===== -->
+<script>
+/* ============================================================
+   MAQUETE 3D — modelo volumétrico da área social, montado a partir
+   das imagens do projeto. WebGL puro (sem bibliotecas).
+   Medidas em metros: x = largura (0 = parede da TV), z = profundidade
+   (0 = janela), y = altura. Os pontos de vista vêm de TOUR.vistas[].planta.
+   ============================================================ */
+var Maquete = (function(){
+'use strict';
+var H = 2.7, W = 4.8, D = 11;
+
+/* ---------------- matemática ---------------- */
+function perspective(fovy, a, n, f){ var t = 1/Math.tan(fovy/2), o = new Float32Array(16);
+  o[0] = t/a; o[5] = t; o[10] = (f + n)/(n - f); o[11] = -1; o[14] = 2*f*n/(n - f); return o; }
+function lookAt(e, c, u){
+  var zx = e[0]-c[0], zy = e[1]-c[1], zz = e[2]-c[2], l = Math.hypot(zx,zy,zz); zx/=l; zy/=l; zz/=l;
+  var xx = u[1]*zz - u[2]*zy, xy = u[2]*zx - u[0]*zz, xz = u[0]*zy - u[1]*zx; l = Math.hypot(xx,xy,xz); xx/=l; xy/=l; xz/=l;
+  var yx = zy*xz - zz*xy, yy = zz*xx - zx*xz, yz = zx*xy - zy*xx;
+  return new Float32Array([xx,yx,zx,0, xy,yy,zy,0, xz,yz,zz,0, -(xx*e[0]+xy*e[1]+xz*e[2]), -(yx*e[0]+yy*e[1]+yz*e[2]), -(zx*e[0]+zy*e[1]+zz*e[2]), 1]);
+}
+function mul(a, b){ var o = new Float32Array(16);
+  for (var i = 0; i < 4; i++) for (var j = 0; j < 4; j++){ var s = 0; for (var k = 0; k < 4; k++) s += a[k*4 + j]*b[i*4 + k]; o[i*4 + j] = s; } return o; }
+function hex(h){ var n = parseInt(h.slice(1), 16); return [(n >> 16 & 255)/255, (n >> 8 & 255)/255, (n & 255)/255]; }
+var seed = 7; function rnd(){ seed = (seed*16807) % 2147483647; return (seed - 1)/2147483646; }
+
+/* ---------------- texturas procedurais ---------------- */
+function canvasTex(size, draw){ var c = document.createElement('canvas'); c.width = c.height = size; draw(c.getContext('2d'), size); return c; }
+function noise(g, s, a, n){ for (var i = 0; i < n; i++){ g.fillStyle = 'rgba(' + (rnd() < .5 ? '0,0,0' : '255,255,255') + ',' + (rnd()*a) + ')'; g.fillRect(rnd()*s, rnd()*s, 1 + rnd()*2, 1 + rnd()*2); } }
+var TEX = {
+  tile: function(g, s){ g.fillStyle = '#e6dccb'; g.fillRect(0,0,s,s); noise(g, s, .05, 9000);
+    for (var i = 0; i < 2; i++) for (var j = 0; j < 2; j++){ g.fillStyle = 'rgba(' + (rnd() < .5 ? '255,250,240' : '120,100,80') + ',' + (rnd()*.05) + ')'; g.fillRect(i*s/2, j*s/2, s/2, s/2); }
+    g.strokeStyle = 'rgba(150,130,105,.45)'; g.lineWidth = 2; g.beginPath(); g.moveTo(0,1); g.lineTo(s,1); g.moveTo(1,0); g.lineTo(1,s); g.moveTo(0,s/2); g.lineTo(s,s/2); g.moveTo(s/2,0); g.lineTo(s/2,s); g.stroke(); },
+  wood: function(g, s){ g.fillStyle = '#c4935f'; g.fillRect(0,0,s,s);
+    for (var i = 0; i < 160; i++){ var y = rnd()*s, w = .5 + rnd()*2.5; g.strokeStyle = 'rgba(' + (rnd() < .6 ? '120,72,35' : '235,190,140') + ',' + (.08 + rnd()*.2) + ')'; g.lineWidth = w;
+      g.beginPath(); g.moveTo(0, y); for (var x = 0; x <= s; x += 16) g.lineTo(x, y + Math.sin(x*.02 + i)*3); g.stroke(); }
+    noise(g, s, .05, 3000); },
+  stone: function(g, s){ g.fillStyle = '#cbb390'; g.fillRect(0,0,s,s); var y = 0;
+    while (y < s){ var h = 14 + rnd()*20, x = -rnd()*40;
+      while (x < s){ var w = 30 + rnd()*60, c = 190 + rnd()*40; g.fillStyle = 'rgb(' + (c + 20|0) + ',' + (c|0) + ',' + (c - 32|0) + ')';
+        g.fillRect(x + 1.5, y + 1.5, w - 3, h - 3); g.fillStyle = 'rgba(255,255,255,.12)'; g.fillRect(x + 2, y + 2, w - 4, 3); x += w; }
+      y += h; }
+    noise(g, s, .12, 14000); },
+  marble: function(g, s){ g.fillStyle = '#f1eee9'; g.fillRect(0,0,s,s); noise(g, s, .04, 6000);
+    for (var i = 0; i < 9; i++){ g.strokeStyle = 'rgba(110,105,100,' + (.12 + rnd()*.25) + ')'; g.lineWidth = .6 + rnd()*1.6; g.beginPath();
+      var x = rnd()*s, y = 0; g.moveTo(x, y); while (y < s){ x += (rnd() - .5)*50; y += 20 + rnd()*30; g.lineTo(x, y); } g.stroke(); } },
+  fabric: function(g, s){ g.fillStyle = '#ebe5da'; g.fillRect(0,0,s,s); noise(g, s, .07, 16000); },
+  rug: function(g, s){ g.fillStyle = '#d9d0bf'; g.fillRect(0,0,s,s);
+    for (var y = 0; y < s; y += 4) for (var x = 0; x < s; x += 4){ g.fillStyle = 'rgba(' + ((x + y)/4 % 2 ? '255,255,255' : '90,80,65') + ',.12)'; g.fillRect(x, y, 3, 3); } noise(g, s, .08, 6000); },
+  wicker: function(g, s){ g.fillStyle = '#c99a5e'; g.fillRect(0,0,s,s);
+    for (var y = 0; y < s; y += 6) for (var x = 0; x < s; x += 6){ g.fillStyle = 'rgba(' + ((x/6 + y/6) % 2 ? '255,230,180' : '90,55,25') + ',.25)'; g.fillRect(x, y, 6, 3); } },
+  sky: function(g, s){ var gr = g.createLinearGradient(0, 0, 0, s*0.6); gr.addColorStop(0, '#8fb3cf'); gr.addColorStop(1, '#e8eef0'); g.fillStyle = gr; g.fillRect(0, 0, s, s*0.6);
+    g.fillStyle = '#7f9466'; g.fillRect(0, s*0.6, s, s*0.4);
+    for (var i = 0; i < 70; i++){ var x = rnd()*s, r = 8 + rnd()*26, y = s*0.6 + 6 - rnd()*r*0.9; g.fillStyle = 'rgb(' + (52 + rnd()*30|0) + ',' + (78 + rnd()*30|0) + ',' + (48 + rnd()*20|0) + ')'; g.beginPath(); g.arc(x, y, r, 0, 7); g.fill(); }
+    g.fillStyle = 'rgba(255,255,255,.35)'; for (var j = 0; j < 5; j++){ g.beginPath(); g.ellipse(rnd()*s, 30 + rnd()*120, 40 + rnd()*60, 8 + rnd()*8, 0, 0, 7); g.fill(); }
+    noise(g, s, .05, 4000); },
+  blob: function(g, s){ var r = g.createRadialGradient(s/2, s/2, 0, s/2, s/2, s/2); r.addColorStop(0, 'rgba(0,0,0,1)'); r.addColorStop(.55, 'rgba(0,0,0,.55)'); r.addColorStop(1, 'rgba(0,0,0,0)'); g.fillStyle = r; g.fillRect(0,0,s,s); },
+  ring: function(g, s){ g.clearRect(0,0,s,s); g.strokeStyle = '#fff'; g.lineWidth = s*.07; g.beginPath(); g.arc(s/2, s/2, s*.4, 0, 7); g.stroke(); g.fillStyle = '#fff'; g.beginPath(); g.arc(s/2, s/2, s*.12, 0, 7); g.fill(); }
+};
+
+/* ---------------- materiais ---------------- */
+var MAT = {
+  piso:     { tex:'tile',   k:0.9, c:'#e9e1d4' },
+  madeira:  { tex:'wood',   k:1.1 },
+  madeiraE: { tex:'wood',   k:1.1, c:'#b7916a' },
+  pedra:    { tex:'stone',  k:1.3 },
+  marmore:  { tex:'marmore', k:1.4 },
+  tecido:   { tex:'fabric', k:0.6 },
+  tecidoB:  { tex:'fabric', k:0.6, c:'#d8cdbb' },
+  tapete:   { tex:'rug',    k:0.5 },
+  palha:    { tex:'wicker', k:0.25 },
+  parede:   { c:'#ece9e4' },
+  fendi:    { c:'#a49d93' },
+  fendiC:   { c:'#bdb6ab' },
+  preto:    { c:'#141414' },
+  tela:     { c:'#0d0e10', spec:1 },
+  inox:     { c:'#bcbdbb' },
+  vermelho: { c:'#c8232f' },
+  branco:   { c:'#f2f0ec' },
+  verde:    { c:'#3f5b35' },
+  verde2:   { c:'#5b7a43' },
+  vaso:     { c:'#d4c8b6' },
+  vasoE:    { c:'#5d5853' },
+  espelho:  { c:'#9aa3a8', spec:1 },
+  vidro:    { c:'#c9dde6', a:0.22, unlit:1 },
+  vidroLED: { c:'#f3d5a1', emit:0.75 },
+  cortina:  { c:'#f6f3ec', a:0.72 },
+  voil:     { c:'#f8f6f0', a:0.3, unlit:1 },
+  led:      { c:'#ffd9a0', emit:1 },
+  base:     { c:'#1c1c1d' },
+  garrafa:  { c:'#243321' },
+  rotulo:   { c:'#efe6d6' },
+  sombra:   { tex:'blob', blob:1, a:0.5 },
+  ceu:      { tex:'sky', emit:1, c:'#ffffff' },
+  forro:    { c:'#dcd8d1', unlit:1 },
+  forroE:   { c:'#cfcac2', unlit:1 },
+  spot:     { c:'#fff3dc', emit:1 },
+  cursor:   { c:'#ffffff', a:0.9, unlit:1 }
+};
+MAT.marmore.tex = 'marble';
+
+/* ---------------- geometria ---------------- */
+var batches = {}, groups = {};
+function batch(group, mat){ var k = group + '|' + mat; return batches[k] || (batches[k] = { group:group, mat:mat, p:[], n:[], uv:[] }); }
+function quad(b, a, bb, c, d, nrm, uvs){
+  var P = b.p, N = b.n, U = b.uv, v = [a, bb, c, a, c, d], t = [uvs[0], uvs[1], uvs[2], uvs[0], uvs[2], uvs[3]];
+  for (var i = 0; i < 6; i++){ P.push(v[i][0], v[i][1], v[i][2]); N.push(nrm[0], nrm[1], nrm[2]); U.push(t[i][0], t[i][1]); }
+}
+function box(g, m, x0, x1, y0, y1, z0, z1){
+  var b = batch(g, m), k = MAT[m].k || 1, f = function(a, c){ return [a/k, c/k]; };
+  quad(b, [x0,y0,z1],[x1,y0,z1],[x1,y1,z1],[x0,y1,z1], [0,0,1],  [f(x0,y0),f(x1,y0),f(x1,y1),f(x0,y1)]);
+  quad(b, [x1,y0,z0],[x0,y0,z0],[x0,y1,z0],[x1,y1,z0], [0,0,-1], [f(x1,y0),f(x0,y0),f(x0,y1),f(x1,y1)]);
+  quad(b, [x1,y0,z1],[x1,y0,z0],[x1,y1,z0],[x1,y1,z1], [1,0,0],  [f(z1,y0),f(z0,y0),f(z0,y1),f(z1,y1)]);
+  quad(b, [x0,y0,z0],[x0,y0,z1],[x0,y1,z1],[x0,y1,z0], [-1,0,0], [f(z0,y0),f(z1,y0),f(z1,y1),f(z0,y1)]);
+  quad(b, [x0,y1,z1],[x1,y1,z1],[x1,y1,z0],[x0,y1,z0], [0,1,0],  [f(x0,z1),f(x1,z1),f(x1,z0),f(x0,z0)]);
+  quad(b, [x0,y0,z0],[x1,y0,z0],[x1,y0,z1],[x0,y0,z1], [0,-1,0], [f(x0,z0),f(x1,z0),f(x1,z1),f(x0,z1)]);
+}
+/* cilindro com eixo 'x', 'y' ou 'z' */
+function cyl(g, m, axis, cx, cy, cz, r, len, seg){
+  seg = seg || 18; var b = batch(g, m), h = len/2;
+  function pt(ang, s){ var a = Math.cos(ang)*r, c = Math.sin(ang)*r;
+    if (axis === 'y') return [cx + a, cy + s*h, cz + c]; if (axis === 'x') return [cx + s*h, cy + a, cz + c]; return [cx + a, cy + c, cz + s*h]; }
+  function nr(ang){ var a = Math.cos(ang), c = Math.sin(ang); if (axis === 'y') return [a,0,c]; if (axis === 'x') return [0,a,c]; return [a,c,0]; }
+  var ax = axis === 'y' ? [0,1,0] : axis === 'x' ? [1,0,0] : [0,0,1];
+  for (var i = 0; i < seg; i++){
+    var a0 = i/seg*Math.PI*2, a1 = (i + 1)/seg*Math.PI*2, am = (a0 + a1)/2;
+    quad(b, pt(a0,-1), pt(a1,-1), pt(a1,1), pt(a0,1), nr(am), [[0,0],[1,0],[1,1],[0,1]]);
+    var c1 = axis === 'y' ? [cx, cy + h, cz] : axis === 'x' ? [cx + h, cy, cz] : [cx, cy, cz + h];
+    var c0 = axis === 'y' ? [cx, cy - h, cz] : axis === 'x' ? [cx - h, cy, cz] : [cx, cy, cz - h];
+    quad(b, c1, pt(a0,1), pt(a1,1), c1, ax, [[.5,.5],[0,0],[1,0],[.5,.5]]);
+    quad(b, c0, pt(a1,-1), pt(a0,-1), c0, [-ax[0],-ax[1],-ax[2]], [[.5,.5],[0,0],[1,0],[.5,.5]]);
+  }
+}
+function ellip(g, m, cx, cy, cz, rx, ry, rz, seg, wave){
+  seg = seg || 16; var b = batch(g, m), rows = Math.max(6, seg/2|0);
+  function pt(i, j){ var th = j/rows*Math.PI, ph = i/seg*Math.PI*2, s = Math.sin(th);
+    var w = wave ? 1 + wave*Math.sin(ph*3) : 1, dy = wave ? wave*0.6*Math.sin(ph*3)*s : 0;
+    var n = [s*Math.cos(ph), Math.cos(th), s*Math.sin(ph)];
+    return { p:[cx + rx*n[0]*w, cy + ry*n[1] + dy*ry*4, cz + rz*n[2]*w], n:n, uv:[i/seg*rx*6, j/rows*ry*6 + .01] }; }
+  for (var i = 0; i < seg; i++) for (var j = 0; j < rows; j++){
+    var a = pt(i, j), c = pt(i + 1, j), d = pt(i + 1, j + 1), e = pt(i, j + 1);
+    var P = b.p, N = b.n, U = b.uv;
+    [a, c, d, a, d, e].forEach(function(v){ P.push(v.p[0], v.p[1], v.p[2]); N.push(v.n[0], v.n[1], v.n[2]); U.push(v.uv[0], v.uv[1]); });
+  }
+}
+function blob(x0, x1, z0, z1, a){ var b = batch('sombra' + (a || ''), 'sombra'), y = 0.004;
+  quad(b, [x0,y,z1],[x1,y,z1],[x1,y,z0],[x0,y,z0], [0,1,0], [[0,0],[1,0],[1,1],[0,1]]); }
+
+/* ---------------- o modelo ---------------- */
+function plant(g, x, z, potR, potH, h, dark){
+  cyl(g, dark ? 'vasoE' : 'vaso', 'y', x, potH/2, z, potR, potH, 20);
+  var y = potH;
+  ellip(g, 'verde', x, y + h*0.35, z, h*0.3, h*0.3, h*0.3, 14);
+  ellip(g, 'verde2', x + h*0.14, y + h*0.6, z - h*0.08, h*0.24, h*0.26, h*0.24, 12);
+  ellip(g, 'verde', x - h*0.12, y + h*0.7, z + h*0.1, h*0.22, h*0.24, h*0.22, 12);
+  blob(x - potR*2.2, x + potR*2.2, z - potR*2.2, z + potR*2.2);
+}
+function build(){
+  // base da maquete e piso
+  box('b', 'base', -0.35, W + 0.35, -0.3, -0.02, -0.35, D + 0.35);
+  box('b', 'piso', 0, W, -0.02, 0, 0, D);
+
+  /* ---- paredes (cada grupo é cortado quando fica entre a câmera e o interior) ---- */
+  var t = 0.12;
+  // janela (z = 0)
+  groups.n = { nrm:[0,0,-1] };
+  box('n', 'parede', -t, 0.5, 0, H, -t, 0); box('n', 'parede', 4.3, W + t, 0, H, -t, 0);
+  box('n', 'parede', 0.5, 4.3, 0, 0.08, -t, 0); box('n', 'parede', 0.5, 4.3, 2.5, H, -t, 0);
+  box('n', 'preto', 0.5, 4.3, 0.08, 0.12, -0.08, -0.04); box('n', 'preto', 0.5, 4.3, 2.46, 2.5, -0.08, -0.04);
+  [0.5, 1.45, 2.4, 3.35, 4.26].forEach(function(x){ box('n', 'preto', x, x + 0.04, 0.08, 2.5, -0.08, -0.04); });
+  box('n', 'vidro', 0.5, 4.3, 0.12, 2.46, -0.065, -0.055);
+  box('n', 'cortina', 0.25, 1.15, 0, 2.62, 0.04, 0.16); box('n', 'cortina', 3.65, 4.55, 0, 2.62, 0.04, 0.16);
+  box('n', 'voil', 1.15, 3.65, 0, 2.62, 0.1, 0.12);
+  // parede da TV e circulação (x = 0)
+  groups.w = { nrm:[-1,0,0] };
+  box('w', 'parede', -t, 0, 0, H, 0, D);
+  box('w', 'fendi', 0, 0.04, 0, H, 1.3, 3.9);
+  box('w', 'preto', 0.04, 0.052, 0, H, 1.95, 1.97); box('w', 'preto', 0.04, 0.052, 0, H, 3.23, 3.25);
+  box('w', 'madeira', 0, 0.3, 2.06, 2.11, 1.3, 3.9);
+  box('w', 'tela', 0.05, 0.09, 1.08, 1.78, 1.82, 3.38);
+  box('w', 'madeira', 0, 0.48, 0.3, 0.72, 1.45, 3.75); blob(0, 0.6, 1.4, 3.8);
+  box('w', 'madeira', 0, 0.46, 0, 2.55, 0.45, 1.25);                        // cristaleira
+  box('w', 'vidroLED', 0.46, 0.475, 1.15, 2.45, 0.5, 1.2);
+  box('w', 'preto', 0.46, 0.475, 0.12, 1.05, 0.5, 0.86);                     // adega climatizada
+  box('w', 'madeiraE', 0.46, 0.475, 0.12, 1.05, 0.9, 1.2);
+  box('w', 'fendiC', 0, 0.06, 0, H, 3.9, D);                                 // portas altas
+  for (var zz = 4.6; zz < D; zz += 0.62) box('w', 'preto', 0.06, 0.068, 0.05, H - 0.05, zz, zz + 0.008);
+  plant('w', 0.22, 2.2, 0.06, 0.1, 0.32); box('w', 'branco', 0.12, 0.34, 0.72, 0.78, 1.65, 1.95);
+  // parede de pedra, entrada, adega e coluna da cozinha (x = W)
+  groups.e = { nrm:[1,0,0] };
+  box('e', 'parede', W, W + t, 0, H, 0, 5.6); box('e', 'parede', W, W + t, 2.2, H, 5.6, 6.5); box('e', 'parede', W, W + t, 0, H, 6.5, D);
+  box('e', 'pedra', W - 0.06, W, 0, H, 0, 5.5);
+  box('e', 'madeira', W + 0.02, W + 0.07, 0, 2.2, 5.62, 6.48);              // porta de entrada
+  box('e', 'preto', W - 0.02, W + 0.02, 0.98, 1.2, 6.32, 6.38);
+  // McLaren de F1 na parede (vista de cima)
+  var cx = W - 0.06, cyc = 1.95;
+  box('e', 'branco', cx - 0.16, cx, cyc - 0.11, cyc + 0.11, 1.75, 3.0);
+  box('e', 'vermelho', cx - 0.15, cx, cyc - 0.06, cyc + 0.06, 3.0, 3.42);
+  box('e', 'vermelho', cx - 0.12, cx, cyc - 0.36, cyc + 0.36, 3.34, 3.46);
+  box('e', 'vermelho', cx - 0.2, cx, cyc - 0.3, cyc + 0.3, 1.38, 1.55);
+  box('e', 'vermelho', cx - 0.13, cx, cyc - 0.22, cyc - 0.11, 2.0, 2.65); box('e', 'vermelho', cx - 0.13, cx, cyc + 0.11, cyc + 0.22, 2.0, 2.65);
+  ellip('e', 'preto', cx - 0.16, cyc, 2.35, 0.06, 0.07, 0.17, 12);
+  [[1.72, -1],[1.72, 1],[3.05, -1],[3.05, 1]].forEach(function(w){ cyl('e', 'preto', 'y', cx - 0.15, cyc + w[1]*0.3, w[0], 0.16, 0.13, 22); });
+  // espelho
+  box('e', 'madeira', W - 0.1, W - 0.06, 0.05, 2.45, 3.75, 4.55); box('e', 'espelho', W - 0.11, W - 0.1, 0.12, 2.38, 3.82, 4.48);
+  // adega de parede
+  [7.15, 7.75].forEach(function(z){
+    box('e', 'madeiraE', W - 0.05, W, 0.35, 2.35, z - 0.03, z + 0.03);
+    for (var r = 0; r < 6; r++){ var y = 0.55 + r*0.3; cyl('e', 'garrafa', 'z', W - 0.12, y, z, 0.036, 0.3, 10); box('e', 'vermelho', W - 0.16, W - 0.08, y - 0.04, y + 0.04, z + 0.15, z + 0.2); box('e', 'rotulo', W - 0.16, W - 0.08, y - 0.03, y + 0.03, z - 0.08, z + 0.02); }
+  });
+  // coluna de eletros e armários
+  box('e', 'fendi', W - 0.62, W, 0, 2.35, 8.4, 10.4);
+  box('e', 'inox', W - 0.64, W - 0.62, 0.05, 1.9, 8.48, 9.38);
+  box('e', 'preto', W - 0.645, W - 0.64, 0.05, 1.9, 8.92, 8.93);
+  box('e', 'inox', W - 0.64, W - 0.62, 0.78, 1.25, 9.5, 10.3); box('e', 'preto', W - 0.645, W - 0.64, 0.86, 1.15, 9.58, 10.22);
+  box('e', 'inox', W - 0.64, W - 0.62, 1.32, 1.66, 9.5, 10.3); box('e', 'preto', W - 0.645, W - 0.64, 1.38, 1.58, 9.58, 10.0);
+  blob(W - 0.8, W, 8.3, 10.5);
+  // fundo da cozinha (z = D)
+  groups.s = { nrm:[0,0,1] };
+  box('s', 'parede', -t, W + t, 0, H, D, D + t);
+  box('s', 'madeira', 1.35, W - 0.62, 0.1, 0.88, D - 0.6, D);
+  box('s', 'preto', 1.35, W - 0.62, 0, 0.1, D - 0.56, D);
+  box('s', 'led', 1.35, W - 0.62, 0.02, 0.05, D - 0.6, D - 0.59);
+  for (var xx = 1.95; xx < W - 0.7; xx += 0.6) box('s', 'preto', xx, xx + 0.008, 0.12, 0.86, D - 0.605, D - 0.6);
+  box('s', 'marmore', 1.35, W - 0.62, 0.88, 0.92, D - 0.63, D);
+  box('s', 'marmore', 1.35, W - 0.62, 0.92, 1.5, D - 0.04, D);
+  box('s', 'preto', 3.3, 3.9, 0.92, 0.935, D - 0.52, D - 0.12);
+  box('s', 'inox', 2.0, 2.5, 0.905, 0.925, D - 0.5, D - 0.15);
+  box('s', 'fendi', 1.35, W - 0.62, 1.55, 2.3, D - 0.36, D);
+  box('s', 'led', 1.35, W - 0.62, 1.53, 1.55, D - 0.36, D - 0.3);
+  blob(1.3, W - 0.6, D - 0.75, D);
+  // divisória circulação / cozinha (x = 1.35)
+  groups.d = { nrm:[-1,0,0] };
+  box('d', 'parede', 1.29, 1.35, 0, H, 8.0, D);
+  box('d', 'fendiC', 1.23, 1.29, 0, H, 8.0, D);
+
+  /* ---- mobiliário solto ---- */
+  var g = 'm';
+  // estar
+  box(g, 'tapete', 1.1, 4.4, 0, 0.012, 0.9, 3.8);
+  box(g, 'tecido', 3.85, 4.72, 0.1, 0.42, 0.9, 3.7);
+  box(g, 'preto', 3.9, 4.67, 0, 0.1, 0.95, 3.65);
+  box(g, 'tecido', 4.45, 4.72, 0.42, 0.88, 0.9, 3.7);
+  box(g, 'tecido', 3.85, 4.72, 0.42, 0.6, 0.9, 1.08); box(g, 'tecido', 3.85, 4.72, 0.42, 0.6, 3.52, 3.7);
+  box(g, 'tecidoB', 3.88, 4.45, 0.42, 0.5, 1.1, 2.29); box(g, 'tecidoB', 3.88, 4.45, 0.42, 0.5, 2.31, 3.5);
+  [[1.2,'tecido'],[1.75,'tecidoB'],[2.3,'tecido'],[2.85,'tecidoB'],[3.4,'tecido']].forEach(function(p){ box(g, p[1], 4.3, 4.45, 0.5, 0.86, p[0] - 0.24, p[0] + 0.24); });
+  box(g, 'tecidoB', 3.95, 4.5, 0.5, 0.53, 2.9, 3.5);
+  blob(3.7, 4.85, 0.75, 3.85);
+  plant(g, 4.5, 4.75, 0.2, 0.4, 0.9, false);
+  plant(g, 4.3, 5.25, 0.13, 0.26, 0.45, false);
+  // jantar
+  box(g, 'madeira', 1.9, 2.9, 0.73, 0.77, 4.75, 6.95);
+  [[1.98, 4.85],[2.82, 4.85],[1.98, 6.85],[2.82, 6.85]].forEach(function(p){ cyl(g, 'madeira', 'y', p[0], 0.365, p[1], 0.035, 0.73, 10); });
+  blob(1.6, 3.2, 4.5, 7.0, '2');
+  [5.15, 5.85, 6.55].forEach(function(z){ chairX(1.48, z, 1); chairX(3.32, z, -1); });
+  for (var i = 0; i < 12; i++){ var a = i/12*Math.PI*2; ellip(g, 'palha', 2.4 + Math.cos(a)*0.16, 0.8, 5.85 + Math.sin(a)*0.3, 0.035, 0.03, 0.035, 8); }
+  // pendente em fibra
+  ellip(g, 'palha', 2.4, 1.72, 5.85, 0.55, 0.06, 0.48, 28, 0.12);
+  ellip(g, 'led', 2.4, 1.66, 5.85, 0.06, 0.06, 0.06, 10);
+  cyl(g, 'preto', 'y', 2.4, 2.22, 5.85, 0.006, 1.0, 6);
+  // ilha em cascata
+  box(g, 'madeira', 2.0, 2.8, 0, 0.88, 7.0, 9.3);
+  box(g, 'marmore', 1.95, 2.85, 0.88, 0.93, 6.95, 9.35);
+  box(g, 'marmore', 1.95, 2.85, 0, 0.88, 6.95, 7.0);
+  box(g, 'marmore', 2.8, 2.85, 0, 0.88, 7.0, 9.35);
+  box(g, 'inox', 2.15, 2.65, 0.915, 0.935, 8.1, 8.6);
+  cyl(g, 'inox', 'y', 2.72, 1.12, 8.35, 0.015, 0.4, 8); cyl(g, 'inox', 'z', 2.62, 1.31, 8.35, 0.015, 0.2, 8);
+  blob(1.8, 3.0, 6.8, 9.5);
+
+  /* ---- forro e exterior: só aparecem quando se está dentro do apartamento ---- */
+  groups.c = { inner:1 }; groups.x = { inner:1 };
+  box('c', 'forro', -0.12, W + 0.12, H, H + 0.08, -0.12, D + 0.12);
+  box('c', 'forroE', 0, W, H - 0.12, H, 0, 0.35);                         // sanca da cortina
+  [[0.7,1.4],[0.7,2.6],[0.7,3.8],[3.0,0.9],[3.0,3.9],[4.2,1.6],[4.2,3.2],[1.2,5.2],[3.6,5.2],[1.2,6.6],[3.6,6.6],[2.0,10.0],[3.4,10.0],[0.65,8.0],[0.65,9.6],[3.6,8.0]].forEach(function(s){
+    cyl('c', 'preto', 'y', s[0], H - 0.004, s[1], 0.055, 0.008, 14); cyl('c', 'spot', 'y', s[0], H - 0.009, s[1], 0.04, 0.006, 14); });
+  box('c', 'branco', 1.95, 2.65, H - 0.06, H, 2.25, 2.95); box('c', 'fendiC', 2.05, 2.55, H - 0.062, H - 0.06, 2.35, 2.85);
+  box('c', 'spot', 4.05, 4.09, H - 0.012, H, 7.2, 10.3);
+  box('c', 'spot', 1.4, 1.44, H - 0.012, H, 4.7, 7.0);
+  var sb = batch('x', 'ceu');
+  quad(sb, [-7, -3, -3.5], [W + 7, -3, -3.5], [W + 7, 6.5, -3.5], [-7, 6.5, -3.5], [0,0,1], [[0,1],[1,1],[1,0],[0,0]]);
+  var cb = batch('cur', 'cursor'), seg = 32, rr = 0.22;
+  for (var i = 0; i < seg; i++){ var a0 = i/seg*Math.PI*2, a1 = (i + 1)/seg*Math.PI*2;
+    quad(cb, [Math.cos(a0)*rr, 0.012, Math.sin(a0)*rr], [Math.cos(a0)*(rr - 0.025), 0.012, Math.sin(a0)*(rr - 0.025)], [Math.cos(a1)*(rr - 0.025), 0.012, Math.sin(a1)*(rr - 0.025)], [Math.cos(a1)*rr, 0.012, Math.sin(a1)*rr], [0,1,0], [[0,0],[0,0],[0,0],[0,0]]); }
+}
+function chairX(x, z, face){ // cadeira virada para x (face +1 = olha para +x)
+  var s = 0.22, g = 'm';
+  box(g, 'madeiraE', x - s, x + s, 0.42, 0.46, z - s, z + s);
+  box(g, 'tecido', x - s + .02, x + s - .02, 0.46, 0.5, z - s + .02, z + s - .02);
+  var bx = face > 0 ? x - s : x + s - 0.05;
+  box(g, 'madeiraE', bx, bx + 0.05, 0.5, 0.9, z - s, z + s);
+  box(g, 'tecido', face > 0 ? bx + 0.05 : bx - 0.012, face > 0 ? bx + 0.062 : bx, 0.55, 0.86, z - s + .03, z + s - .03);
+  [[-1,-1],[1,-1],[-1,1],[1,1]].forEach(function(q){ box(g, 'madeiraE', x + q[0]*(s - .03) - .02, x + q[0]*(s - .03) + .02, 0, 0.42, z + q[1]*(s - .03) - .02, z + q[1]*(s - .03) + .02); });
+  blob(x - .34, x + .34, z - .34, z + .34);
+}
+
+/* ---------------- WebGL ---------------- */
+var VS = 'attribute vec3 p;attribute vec3 n;attribute vec2 t;uniform mat4 vp;uniform vec3 uOff;varying vec3 vN;varying vec2 vT;varying vec3 vW;' +
+  'void main(){vN=n;vT=t;vW=p+uOff;gl_Position=vp*vec4(p+uOff,1.0);}';
+var FS = 'precision mediump float;varying vec3 vN;varying vec2 vT;varying vec3 vW;' +
+  'uniform vec3 uC;uniform sampler2D uT;uniform float uHasT,uA,uEmit,uClip,uUnlit,uBlob,uSpec,uIn;uniform vec3 uEye;' +
+  'void main(){' +
+  ' if(vW.y>uClip+0.0005) discard;' +
+  ' if(uBlob<0.5 && uUnlit<0.5 && uA>0.99 && dot(vN,uEye-vW)<0.0){gl_FragColor=vec4(0.13,0.13,0.135,1.0);return;}' +
+  ' vec4 tx=uHasT>0.5?texture2D(uT,vT):vec4(1.0);' +
+  ' if(uBlob>0.5){gl_FragColor=vec4(0.0,0.0,0.0,tx.a*uA);return;}' +
+  ' vec3 base=uC*tx.rgb;' +
+  ' if(uEmit>0.0){gl_FragColor=vec4(mix(base*0.8,base*1.25,uEmit),1.0);return;}' +
+  ' if(uUnlit>0.5){gl_FragColor=vec4(base,uA);return;}' +
+  ' vec3 nn=normalize(vN);' +
+  ' float hemi=0.5+0.5*nn.y;' +
+  ' vec3 amb=mix(vec3(0.36,0.34,0.31),vec3(0.64,0.635,0.64),hemi);' +
+  ' vec3 L=normalize(vec3(-0.35,0.85,-0.45));' +
+  ' float d=max(dot(nn,L),0.0);' +
+  ' vec3 col=base*(amb+d*vec3(0.42,0.39,0.34));' +
+  ' col*=1.0-0.3*exp(-vW.y*4.0)*(1.0-abs(nn.y));' +
+  ' col*=mix(1.0,1.22+0.12*(1.0-abs(nn.y)),uIn);' +
+  ' if(uSpec>0.5){vec3 v=normalize(uEye-vW);vec3 r=reflect(-v,nn);col+=vec3(0.35)*pow(max(r.y,0.0),3.0)+vec3(0.06);}' +
+  ' gl_FragColor=vec4(col,uA);}';
+
+var gl, prog, loc = {}, texs = {}, draws = [], canvas, layer, ready = false;
+function init(){
+  if (ready) return true;
+  layer = document.getElementById('m3d');
+  canvas = document.getElementById('m3dCanvas');
+  try { gl = canvas.getContext('webgl', { antialias:true, alpha:false }) || canvas.getContext('experimental-webgl'); } catch(e){ gl = null; }
+  if (!gl) return false;
+  function sh(type, src){ var s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s);
+    if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(s)); return s; }
+  prog = gl.createProgram(); gl.attachShader(prog, sh(gl.VERTEX_SHADER, VS)); gl.attachShader(prog, sh(gl.FRAGMENT_SHADER, FS)); gl.linkProgram(prog);
+  gl.useProgram(prog);
+  ['p','n','t'].forEach(function(a){ loc[a] = gl.getAttribLocation(prog, a); });
+  ['vp','uIn','uOff','uC','uT','uHasT','uA','uEmit','uClip','uUnlit','uBlob','uSpec','uEye'].forEach(function(u){ loc[u] = gl.getUniformLocation(prog, u); });
+  build(); buildMarkers();
+  for (var k in batches){
+    var b = batches[k], m = MAT[b.mat];
+    var buf = function(arr){ var x = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, x); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(arr), gl.STATIC_DRAW); return x; };
+    draws.push({ group:b.group, mat:m, name:b.mat, count:b.p.length/3, bp:buf(b.p), bn:buf(b.n), bt:buf(b.uv),
+      order: m.blob ? 1 : (m.a ? 2 : 0), color: m.c ? hex(m.c) : [1,1,1] });
+  }
+  draws.sort(function(a, b){ return a.order - b.order; });
+  for (var g in groups) groups[g].clip = H; groups.m = { clip:H };
+  ready = true; return true;
+}
+function getTex(name){
+  if (texs[name]) return texs[name];
+  var c = canvasTex(name === 'blob' || name === 'ring' ? 128 : 512, TEX[name]);
+  var t = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D, t);
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, c);
+  gl.generateMipmap(gl.TEXTURE_2D);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
+  var wrap = (name === 'blob' || name === 'ring') ? gl.CLAMP_TO_EDGE : gl.REPEAT;
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, wrap); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, wrap);
+  var ext = gl.getExtension('EXT_texture_filter_anisotropic'); if (ext && wrap === gl.REPEAT) gl.texParameterf(gl.TEXTURE_2D, ext.TEXTURE_MAX_ANISOTROPY_EXT, 4);
+  return texs[name] = t;
+}
+
+/* ---------------- pontos de vista ---------------- */
+var markers = [], markLayer;
+function buildMarkers(){
+  markLayer = document.getElementById('m3dMarks'); markLayer.innerHTML = '';
+  TOUR.vistas.forEach(function(v){
+    if (!v.planta) return;
+    var x = v.planta.x, z = v.planta.y, a = v.planta.dir*Math.PI/180;
+    var b = batch('mk', 'led'), r = 0.2, y = 0.01, seg = 28;
+    for (var i = 0; i < seg; i++){ var a0 = i/seg*Math.PI*2, a1 = (i + 1)/seg*Math.PI*2;
+      quad(b, [x + Math.cos(a0)*r, y, z + Math.sin(a0)*r], [x + Math.cos(a0)*(r - 0.04), y, z + Math.sin(a0)*(r - 0.04)], [x + Math.cos(a1)*(r - 0.04), y, z + Math.sin(a1)*(r - 0.04)], [x + Math.cos(a1)*r, y, z + Math.sin(a1)*r], [0,1,0], [[0,0],[0,0],[0,0],[0,0]]); }
+    var c = batch('mkc', 'cortina'), R = 0.85, h = 0.55;
+    quad(c, [x, y, z], [x + Math.cos(a - h)*R, y, z + Math.sin(a - h)*R], [x + Math.cos(a)*R*1.05, y, z + Math.sin(a)*R*1.05], [x + Math.cos(a + h)*R, y, z + Math.sin(a + h)*R], [0,1,0], [[0,0],[0,0],[0,0],[0,0]]);
+    var el = document.createElement('button'); el.type = 'button'; el.className = 'm3d-mk';
+    el.setAttribute('aria-label', 'Entrar na vista ' + v.n + ': ' + v.nome);
+    el.innerHTML = '<span class="n">' + String(v.n).padStart(2, '0') + '</span><span class="l">' + v.nome + '</span>';
+    el.addEventListener('click', function(e){ e.stopPropagation(); goView(v); });
+    markLayer.appendChild(el);
+    markers.push({ v:v, el:el, pos:[x, 1.25, z], floor:[x, 0.02, z] });
+  });
+}
+
+/* ---------------- câmera ----------------
+   Dois modos: 'walk' (dentro, olhar 360° na altura dos olhos) e 'orbit' (maquete vista de fora). */
+var EYE = 1.55;
+var orbit = { th: -0.85, ph: 0.92, r: 15.5, tx: W/2, ty: 0.4, tz: D/2 };
+var walk = { x: 3, z: 3, yaw: 180, pitch: -3, fov: 72 };
+var mode = 'walk', fly = null, active = false, onEnter = null, VP = null, cam = null, hereView = null;
+function orbitCam(){
+  var o = orbit, s = Math.sin(o.ph);
+  return { eye:[o.tx + o.r*s*Math.sin(o.th), o.ty + o.r*Math.cos(o.ph), o.tz + o.r*s*Math.cos(o.th)], tgt:[o.tx, o.ty, o.tz], fov: 40 };
+}
+function walkCam(){
+  var y = walk.yaw*Math.PI/180, p = walk.pitch*Math.PI/180;
+  return { eye:[walk.x, EYE, walk.z], tgt:[walk.x + Math.cos(y)*Math.cos(p)*3, EYE + Math.sin(p)*3, walk.z + Math.sin(y)*Math.cos(p)*3], fov: walk.fov };
+}
+function lerp(a, b, t){ return a + (b - a)*t; }
+function lerp3(a, b, t){ return [lerp(a[0], b[0], t), lerp(a[1], b[1], t), lerp(a[2], b[2], t)]; }
+function ease(x){ return x < .5 ? 4*x*x*x : 1 - Math.pow(-2*x + 2, 3)/2; }
+function angDiff(a, b){ return ((b - a + 540) % 360) - 180; }
+function arc(a, b, t, lift){ var e = lerp3(a.eye, b.eye, t); e[1] += Math.sin(t*Math.PI)*(lift || 0); return { eye:e, tgt:lerp3(a.tgt, b.tgt, t), fov:lerp(a.fov, b.fov, t) }; }
+function baseFov(){ return window.innerWidth/window.innerHeight < 0.8 ? 84 : 72; }
+var OBST = [[3.8,4.8,0.85,3.75],[1.2,3.6,4.7,7.0],[1.9,2.9,6.9,9.4],[1.3,4.8,10.35,11],[4.15,4.8,8.35,10.45],[0,0.55,1.4,3.8],[0,0.5,0.4,1.3],[1.2,1.36,8.0,11]];
+function inBounds(x, z){
+  x = Math.max(0.3, Math.min(W - 0.3, x)); z = Math.max(0.3, Math.min(D - 0.3, z));
+  // não deixa o observador parar dentro de um móvel: empurra para a borda livre mais próxima
+  for (var it = 0; it < 3; it++) OBST.forEach(function(o){
+    var m = 0.28, x0 = o[0] - m, x1 = o[1] + m, z0 = o[2] - m, z1 = o[3] + m;
+    if (x > x0 && x < x1 && z > z0 && z < z1){
+      var c = [[x - x0, x0, null], [x1 - x, x1, null], [z - z0, null, z0], [z1 - z, null, z1]].filter(function(q){ var nx = q[1] == null ? x : q[1], nz = q[2] == null ? z : q[2]; return nx >= 0.3 && nx <= W - 0.3 && nz >= 0.3 && nz <= D - 0.3; }).sort(function(a, b){ return a[0] - b[0]; })[0];
+      if (c){ if (c[1] != null) x = c[1]; else z = c[2]; }
+    }
+  });
+  return [x, z];
+}
+
+/* caminhar até um ponto (e opcionalmente virar para uma direção) */
+function walkTo(x, z, yaw, dur){
+  var p = inBounds(x, z), from = { x:walk.x, z:walk.z, yaw:walk.yaw, pitch:walk.pitch };
+  var dist = Math.hypot(p[0] - walk.x, p[1] - walk.z);
+  if (yaw == null && dist > 0.3) yaw = Math.atan2(p[1] - walk.z, p[0] - walk.x)*180/Math.PI;
+  var dy = yaw == null ? 0 : angDiff(walk.yaw, yaw);
+  var to = { x:p[0], z:p[1], yaw:walk.yaw + dy, pitch: yaw == null ? walk.pitch : -3 };
+  fly = { kind:'walk', from:from, to:to, t0:performance.now(), dur: dur || Math.max(700, Math.min(2200, 520*dist + Math.abs(dy)*4)) };
+}
+function goView(v){
+  if (!v.planta) return;
+  if (mode === 'orbit'){
+    walk.x = v.planta.x; walk.z = v.planta.y; walk.yaw = v.planta.dir; walk.pitch = -3; walk.fov = baseFov();
+    fly = { kind:'cam', from:orbitCam(), to:walkCam(), t0:performance.now(), dur:1800, lift:0.6, done:function(){ setMode('walk', true); } };
+  } else walkTo(v.planta.x, v.planta.y, v.planta.dir);
+}
+function setMode(md, silent){
+  if (md === mode && !silent) return;
+  if (!silent){
+    if (md === 'orbit'){
+      var a = walk.yaw*Math.PI/180;
+      orbit.th = Math.atan2(-Math.cos(a), -Math.sin(a)); orbit.ph = 0.95; orbit.r = window.innerWidth/window.innerHeight < 0.8 ? 22 : 15.5; orbit.tx = W/2; orbit.tz = D/2;
+      fly = { kind:'cam', from:walkCam(), to:orbitCam(), t0:performance.now(), dur:1700, lift:1.2, done:function(){ mode = 'orbit'; syncUI(); } };
+      mode = 'flying'; syncUI(); return;
+    }
+    // da maquete para dentro: entra no ponto mais próximo do centro da vista atual
+    var best = TOUR.vistas[0]; goView(best); mode = 'flying'; syncUI(); return;
+  }
+  mode = md; syncUI();
+}
+
+/* ---------------- interação ---------------- */
+var ptrs = new Map(), drag = null, pinch = null, idleT = 0, autoRot = false, hover = null, keys = {};
+function rayFloor(cx, cy){
+  if (!cam) return null;
+  var w = canvas.clientWidth, h = canvas.clientHeight, nx = cx/w*2 - 1, ny = 1 - cy/h*2;
+  var e = cam.eye, f = [cam.tgt[0] - e[0], cam.tgt[1] - e[1], cam.tgt[2] - e[2]], l = Math.hypot(f[0], f[1], f[2]); f = [f[0]/l, f[1]/l, f[2]/l];
+  var r = [-f[2], 0, f[0]]; l = Math.hypot(r[0], r[2]) || 1; r = [r[0]/l, 0, r[2]/l];
+  var u = [r[1]*f[2] - r[2]*f[1], r[2]*f[0] - r[0]*f[2], r[0]*f[1] - r[1]*f[0]];
+  var t = Math.tan(cam.fov*Math.PI/360), a = w/h;
+  var d = [f[0] + r[0]*nx*t*a + u[0]*ny*t, f[1] + r[1]*nx*t*a + u[1]*ny*t, f[2] + r[2]*nx*t*a + u[2]*ny*t];
+  if (d[1] >= -1e-3) return null;
+  var k = -e[1]/d[1], x = e[0] + d[0]*k, z = e[2] + d[2]*k;
+  if (x < 0 || x > W || z < 0 || z > D) return null;
+  return [x, z];
+}
+function bindInput(){
+  canvas.addEventListener('pointerdown', function(e){ if (fly) return; canvas.setPointerCapture(e.pointerId); ptrs.set(e.pointerId, { x:e.clientX, y:e.clientY });
+    autoRot = false; idleT = performance.now();
+    if (ptrs.size === 1) drag = { x:e.clientX, y:e.clientY, sx:e.clientX, sy:e.clientY, moved:0, pan: e.button === 2 || e.shiftKey };
+    else if (ptrs.size === 2){ var p = Array.from(ptrs.values()); pinch = { d:Math.hypot(p[0].x - p[1].x, p[0].y - p[1].y), r:orbit.r, fov:walk.fov }; drag = null; } });
+  canvas.addEventListener('pointermove', function(e){
+    if (e.pointerType === 'mouse' && !drag && mode !== 'flying') hover = rayFloor(e.clientX, e.clientY);
+    if (!ptrs.has(e.pointerId)) return; ptrs.set(e.pointerId, { x:e.clientX, y:e.clientY });
+    if (pinch && ptrs.size >= 2){ var p = Array.from(ptrs.values()), k = pinch.d/Math.max(1, Math.hypot(p[0].x - p[1].x, p[0].y - p[1].y));
+      if (mode === 'walk') walk.fov = Math.max(38, Math.min(95, pinch.fov*k)); else orbit.r = clampR(pinch.r*k); return; }
+    if (!drag || fly) return; var dx = e.clientX - drag.x, dy = e.clientY - drag.y; drag.x = e.clientX; drag.y = e.clientY; drag.moved += Math.abs(dx) + Math.abs(dy);
+    if (drag.moved > 5) hover = null;
+    if (mode === 'walk'){ var kk = walk.fov/canvas.clientHeight; walk.yaw -= dx*kk; walk.pitch = Math.max(-80, Math.min(80, walk.pitch + dy*kk)); return; }
+    if (drag.pan){ var kp = orbit.r*0.0012, c = Math.cos(orbit.th), s = Math.sin(orbit.th);
+      orbit.tx = Math.max(-1, Math.min(W + 1, orbit.tx - (dx*c - dy*s)*kp)); orbit.tz = Math.max(-1, Math.min(D + 1, orbit.tz - (-dx*s - dy*c)*kp)); return; }
+    orbit.th -= dx*0.006; orbit.ph = Math.max(0.12, Math.min(1.42, orbit.ph - dy*0.005)); });
+  function up(e){
+    if (drag && drag.moved < 6 && e.type === 'pointerup' && !fly){
+      var hit = rayFloor(e.clientX, e.clientY);
+      if (hit){
+        if (mode === 'walk') walkTo(hit[0], hit[1]);
+        else if (mode === 'orbit'){ // toque no chão da maquete: entra naquele ponto
+          var o = orbitCam(), yaw = Math.atan2(hit[1] - o.eye[2], hit[0] - o.eye[0])*180/Math.PI, p = inBounds(hit[0], hit[1]);
+          walk.x = p[0]; walk.z = p[1]; walk.yaw = yaw; walk.pitch = -3; walk.fov = baseFov();
+          fly = { kind:'cam', from:o, to:walkCam(), t0:performance.now(), dur:1700, lift:0.6, done:function(){ setMode('walk', true); } };
+          mode = 'flying'; syncUI();
+        }
+      }
+    }
+    ptrs.delete(e.pointerId); if (ptrs.size < 2) pinch = null; if (ptrs.size === 0) drag = null; }
+  canvas.addEventListener('pointerup', up); canvas.addEventListener('pointercancel', up);
+  canvas.addEventListener('pointerleave', function(){ hover = null; });
+  canvas.addEventListener('contextmenu', function(e){ e.preventDefault(); });
+  canvas.addEventListener('wheel', function(e){ e.preventDefault(); if (fly) return; autoRot = false;
+    if (mode === 'walk') walk.fov = Math.max(38, Math.min(95, walk.fov*Math.pow(1.0012, e.deltaY))); else orbit.r = clampR(orbit.r*Math.pow(1.0012, e.deltaY)); }, { passive:false });
+  window.addEventListener('keydown', function(e){ if (!active) return; var k = e.key.toLowerCase(); if ('wasd'.indexOf(k) > -1 || k.indexOf('arrow') === 0){ keys[k] = true; if (mode === 'walk') e.preventDefault(); } });
+  window.addEventListener('keyup', function(e){ keys[e.key.toLowerCase()] = false; });
+  ui.walkBtn.addEventListener('click', function(){ if (mode === 'orbit') setMode('walk'); });
+  ui.orbitBtn.addEventListener('click', function(){ if (mode === 'walk') setMode('orbit'); });
+  ui.realBtn.addEventListener('click', function(){ if (hereView && onEnter){ onEnter(hereView.id); close(); } });
+}
+function clampR(r){ return Math.max(5, Math.min(26, r)); }
+
+/* ---------------- interface ---------------- */
+var ui = {};
+function syncUI(){
+  ui.walkBtn.setAttribute('aria-pressed', mode === 'walk' ? 'true' : 'false');
+  ui.orbitBtn.setAttribute('aria-pressed', mode === 'orbit' ? 'true' : 'false');
+  layer.dataset.mode = mode;
+  ui.hint.textContent = mode === 'orbit' ? 'Arraste para girar · role para aproximar · toque em um número ou no piso para entrar'
+    : 'Arraste para olhar ao redor · toque no chão para andar' + (window.matchMedia('(pointer: fine)').matches ? ' · W A S D para caminhar' : '');
+}
+function updateHere(){
+  var v = null;
+  if (mode === 'walk' && !fly) TOUR.vistas.forEach(function(x){ if (x.planta && Math.hypot(x.planta.x - walk.x, x.planta.y - walk.z) < 0.35) v = x; });
+  if (v !== hereView){ hereView = v; ui.real.hidden = !v; if (v) ui.realName.textContent = v.nome; }
+}
+
+/* ---------------- render ---------------- */
+var raf = 0, last = 0;
+function frame(now){
+  raf = requestAnimationFrame(frame);
+  var dt = Math.min(64, now - (last || now)); last = now;
+  var w = canvas.clientWidth, h = canvas.clientHeight, pr = Math.min(window.devicePixelRatio || 1, 2);
+  if (canvas.width !== Math.round(w*pr) || canvas.height !== Math.round(h*pr)){ canvas.width = Math.round(w*pr); canvas.height = Math.round(h*pr); }
+  // teclado (W A S D / setas)
+  if (mode === 'walk' && !fly){
+    var f = (keys.w || keys.arrowup ? 1 : 0) - (keys.s || keys.arrowdown ? 1 : 0), s = (keys.d ? 1 : 0) - (keys.a ? 1 : 0), turn = (keys.arrowright ? 1 : 0) - (keys.arrowleft ? 1 : 0);
+    if (f || s || turn){ var y = walk.yaw*Math.PI/180, sp = 0.0016*dt;
+      var p = inBounds(walk.x + (Math.cos(y)*f - Math.sin(y)*s)*sp, walk.z + (Math.sin(y)*f + Math.cos(y)*s)*sp); walk.x = p[0]; walk.z = p[1]; walk.yaw += turn*0.09*dt; }
+  }
+  if (mode === 'orbit' && !fly && autoRot) orbit.th += dt*0.00006;
+  if (mode === 'orbit' && !drag && !pinch && now - idleT > 9000) autoRot = true;
+  var c;
+  if (fly){
+    var t = Math.min(1, (now - fly.t0)/fly.dur), q = ease(t);
+    if (fly.kind === 'walk'){
+      walk.x = lerp(fly.from.x, fly.to.x, q); walk.z = lerp(fly.from.z, fly.to.z, q); walk.yaw = lerp(fly.from.yaw, fly.to.yaw, q); walk.pitch = lerp(fly.from.pitch, fly.to.pitch, q);
+      c = walkCam();
+    } else c = arc(fly.from, fly.to, q, fly.lift);
+    if (t >= 1){ var fl = fly; fly = null; if (fl.done) fl.done(); }
+  } else c = mode === 'orbit' ? orbitCam() : walkCam();
+  cam = c;
+  var inside = c.eye[0] > -0.05 && c.eye[0] < W + 0.05 && c.eye[2] > -0.05 && c.eye[2] < D + 0.05 && c.eye[1] < H - 0.05;
+  var dx = c.eye[0] - W/2, dz = c.eye[2] - D/2, l = Math.hypot(dx, dz) || 1; dx /= l; dz /= l;
+  for (var gname in groups){ var G = groups[gname];
+    if (G.inner){ G.clip = inside ? 99 : -9; continue; }
+    if (!G.nrm) continue;
+    var facing = G.nrm[0]*dx + G.nrm[2]*dz;
+    var target = (!inside && facing > 0.2) ? 0.42 : H;
+    G.clip += (target - G.clip)*Math.min(1, dt/220); }
+  gl.viewport(0, 0, canvas.width, canvas.height);
+  gl.clearColor(0.043, 0.043, 0.047, 1); gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+  gl.enable(gl.DEPTH_TEST); gl.disable(gl.CULL_FACE);
+  var Pm = perspective(c.fov*Math.PI/180, canvas.width/canvas.height, 0.03, 120), V = lookAt(c.eye, c.tgt, [0,1,0]);
+  VP = mul(Pm, V);
+  gl.useProgram(prog);
+  gl.uniformMatrix4fv(loc.vp, false, VP); gl.uniform3fv(loc.uEye, c.eye); gl.uniform1f(loc.uIn, inside ? 1 : 0);
+  for (var i = 0; i < draws.length; i++){
+    var d = draws[i], m = d.mat, grp = groups[d.group], off = [0,0,0];
+    if (d.group === 'mkc' && inside) continue;
+    if (d.group === 'cur'){ if (!hover || fly) continue; off = [hover[0], 0, hover[1]]; }
+    var blobPass = !!m.blob, trans = !!m.a;
+    if (blobPass || trans){ gl.enable(gl.BLEND); gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA); gl.depthMask(false); }
+    else { gl.disable(gl.BLEND); gl.depthMask(true); }
+    if (blobPass || d.group === 'cur' || d.group === 'mk'){ gl.enable(gl.POLYGON_OFFSET_FILL); gl.polygonOffset(-1, -2); } else gl.disable(gl.POLYGON_OFFSET_FILL);
+    gl.uniform3fv(loc.uOff, off);
+    gl.uniform1f(loc.uClip, grp ? grp.clip : 99);
+    gl.uniform3fv(loc.uC, d.color);
+    if (m.tex){ gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, getTex(m.tex)); gl.uniform1i(loc.uT, 0); gl.uniform1f(loc.uHasT, 1); } else gl.uniform1f(loc.uHasT, 0);
+    gl.uniform1f(loc.uA, d.group === 'mkc' ? 0.28 : (m.a || 1));
+    gl.uniform1f(loc.uEmit, m.emit || 0); gl.uniform1f(loc.uUnlit, m.unlit || 0); gl.uniform1f(loc.uBlob, m.blob ? 1 : 0); gl.uniform1f(loc.uSpec, m.spec || 0);
+    bind(d.bp, loc.p, 3); bind(d.bn, loc.n, 3); bind(d.bt, loc.t, 2);
+    gl.drawArrays(gl.TRIANGLES, 0, d.count);
+  }
+  gl.depthMask(true); gl.disable(gl.POLYGON_OFFSET_FILL);
+  placeMarkers(inside);
+  updateHere();
+}
+function bind(b, l, n){ gl.bindBuffer(gl.ARRAY_BUFFER, b); gl.enableVertexAttribArray(l); gl.vertexAttribPointer(l, n, gl.FLOAT, false, 0, 0); }
+function placeMarkers(inside){
+  var w = canvas.clientWidth, h = canvas.clientHeight;
+  markLayer.classList.toggle('hidden', mode === 'flying' || (fly && fly.kind === 'cam'));
+  markLayer.classList.toggle('floor', inside);
+  markers.forEach(function(mk){
+    var p = inside ? mk.floor : mk.pos, M = VP, x = M[0]*p[0] + M[4]*p[1] + M[8]*p[2] + M[12], y = M[1]*p[0] + M[5]*p[1] + M[9]*p[2] + M[13], ww = M[3]*p[0] + M[7]*p[1] + M[11]*p[2] + M[15];
+    var here = inside && Math.hypot(mk.v.planta.x - cam.eye[0], mk.v.planta.y - cam.eye[2]) < 0.6;
+    if (ww <= 0.05 || here){ mk.el.style.visibility = 'hidden'; return; }
+    mk.el.style.visibility = '';
+    var sx = (x/ww + 1)/2*w, sy = (1 - y/ww)/2*h;
+    mk.el.style.transform = 'translate3d(' + sx.toFixed(1) + 'px,' + sy.toFixed(1) + 'px,0)' + (inside ? ' scale(' + Math.max(0.55, Math.min(1.1, 2.4/ww)).toFixed(3) + ')' : '');
+    mk.el.classList.toggle('cur', mk.v.id === curId);
+  });
+}
+
+/* ---------------- API ---------------- */
+var curId = null, bound = false;
+function open(fromId, enterCb){
+  if (!init()) return false;
+  ui = { walkBtn:document.getElementById('m3dWalk'), orbitBtn:document.getElementById('m3dOrbit'), hint:document.getElementById('m3dHint'),
+         real:document.getElementById('m3dReal'), realBtn:document.getElementById('m3dRealBtn'), realName:document.getElementById('m3dRealName') };
+  if (!bound){ bindInput(); bound = true; }
+  onEnter = enterCb; curId = fromId; active = true; hereView = null; ui.real.hidden = true;
+  layer.hidden = false; requestAnimationFrame(function(){ layer.classList.add('on'); });
+  var v = TOUR.vistas.filter(function(x){ return x.id === fromId; })[0] || TOUR.vistas[0];
+  // começa exatamente no ponto de vista da imagem atual, olhando na mesma direção
+  walk.x = v.planta.x; walk.z = v.planta.y; walk.yaw = v.planta.dir; walk.pitch = -3; walk.fov = baseFov();
+  mode = 'walk'; fly = null; syncUI();
+  last = 0; cancelAnimationFrame(raf); raf = requestAnimationFrame(frame);
+  return true;
+}
+function close(){
+  active = false; layer.classList.remove('on'); keys = {};
+  setTimeout(function(){ if (!active){ layer.hidden = true; cancelAnimationFrame(raf); } }, 700);
+}
+return { open:open, close:close, isOpen:function(){ return active; }, supported:function(){ try { var c = document.createElement('canvas'); return !!(c.getContext('webgl') || c.getContext('experimental-webgl')); } catch(e){ return false; } } };
+})();
+
+</script>
+<!-- ===== Visualizador ===== -->
+<script>
+(function(){
+'use strict';
+var $ = function(s){ return document.querySelector(s); };
+var REDUCE = matchMedia('(prefers-reduced-motion: reduce)').matches;
+var FINE = matchMedia('(pointer: fine)').matches;
+var body = document.body;
+var P = TOUR.projeto;
+var views = {}; TOUR.vistas.forEach(function(v, i){ v.n = i + 1; views[v.id] = v; });
+var areas = {}; TOUR.planta.areas.forEach(function(a){ areas[a.id] = a; });
+var TOTAL = TOUR.vistas.length;
+function pad(n){ return String(n).padStart(2, '0'); }
+function clamp(v, a, b){ return Math.max(a, Math.min(b, v)); }
+
+/* ---------- textos do projeto ---------- */
+document.title = P.nome;
+$('#b-nome').textContent = P.nome;
+$('#b-sub').textContent = P.local;
+$('#iK').textContent = P.rotulo;
+$('#iN').textContent = P.nome;
+$('#iS').textContent = P.local;
+$('#iFoot').textContent = P.assinatura;
+$('#aboutK').textContent = P.rotulo + ' · ' + P.local;
+$('#aboutTitle').textContent = P.nome;
+$('#aboutD').innerHTML = P.descricao.map(function(t){ return '<p>' + t + '</p>'; }).join('');
+$('#aboutF').innerHTML = P.ficha.map(function(r){ return '<dt>' + r[0] + '</dt><dd>' + r[1] + '</dd>'; }).join('');
+$('#aboutLema').textContent = P.lema;
+$('#aboutHandle').textContent = P.arroba; $('#aboutHandle').href = P.instagram;
+document.querySelectorAll('.logo-cliente-link').forEach(function(a){ a.href = P.instagram; });
+$('#planTitle').textContent = TOUR.planta.titulo;
+$('#planK').textContent = TOUR.planta.rotulo;
+
+/* ============================================================
+   VISUALIZADOR DE IMAGENS
+   Cada vista é um "slide": fundo desfocado + imagem inteira com os
+   hotspots presos a ela. Movimento: arrastar, zoom e uma leve
+   perspectiva que acompanha o mouse.
+   ============================================================ */
+var stage = $('#stage');
+var imgs = {}, waiters = {}, loaded = 0;
+function loadView(id, cb){
+  if (imgs[id]){ if (cb) cb(imgs[id]); return; }
+  if (waiters[id]){ if (cb) waiters[id].push(cb); return; }
+  waiters[id] = cb ? [cb] : [];
+  var im = new Image(); im.decoding = 'async';
+  im.onload = function(){
+    var done = function(){ imgs[id] = im; loaded++; introProgress(); var l = waiters[id]; waiters[id] = null; l.forEach(function(f){ f(im); }); };
+    if (im.decode) im.decode().then(done, done); else done();
+  };
+  im.onerror = function(){ loaded++; introProgress(); if (id === TOUR.inicio) fail('Não foi possível carregar a imagem "' + views[id].imagem + '". Confira o caminho no cadastro do tour.'); };
+  im.src = views[id].imagem;
+}
+
+function makeSlide(v, im){
+  var el = document.createElement('div'); el.className = 'slide';
+  el.innerHTML = '<div class="slide-bg" style="background-image:url(\'' + v.imagem + '\')"></div><div class="slide-img"><img alt="" draggable="false"><div class="slide-hs"></div></div>';
+  var S = { v:v, el:el, wrap:el.querySelector('.slide-img'), img:el.querySelector('img'), hsBox:el.querySelector('.slide-hs'),
+    iw:im.naturalWidth, ih:im.naturalHeight, z:1, zT:1, zFill:1, ox:0, oy:0, vx:0, vy:0, tx:0, ty:0, txT:0, tyT:0, kb:0, op:1 };
+  S.img.src = v.imagem; S.img.alt = v.nome;
+  S.hs = (v.hotspots || []).map(function(h){ return { h:h }; });
+  buildHotspots(S);
+  stage.appendChild(el);
+  layoutSlide(S);
+  S.z = S.zT = S.zFill;
+  return S;
+}
+/* tamanho base: no computador a imagem aparece inteira; no celular (retrato) preenche a altura e desliza para os lados */
+function layoutSlide(S){
+  var vw = window.innerWidth, vh = window.innerHeight, ia = S.iw/S.ih;
+  var contain = Math.min(vw/S.iw, vh/S.ih), cover = Math.max(vw/S.iw, vh/S.ih);
+  // zoom 1 = foto inteira na tela; zFill = foto preenchendo a tela toda (padrão)
+  S.base = contain; S.zFill = cover/contain;
+  S.w = S.iw*S.base; S.h = S.ih*S.base;
+  S.wrap.style.width = S.w + 'px'; S.wrap.style.height = S.h + 'px';
+  S.wrap.style.marginLeft = (-S.w/2) + 'px'; S.wrap.style.marginTop = (-S.h/2) + 'px';
+  S.zMax = S.zFill*3;
+}
+function clampPan(S){
+  var vw = window.innerWidth, vh = window.innerHeight, sc = S.z*(1 + S.kb);
+  var mx = Math.max(0, (S.w*sc - vw)/2), my = Math.max(0, (S.h*sc - vh)/2);
+  if (S.ox < -mx || S.ox > mx){ S.ox = clamp(S.ox, -mx, mx); S.vx = 0; }
+  if (S.oy < -my || S.oy > my){ S.oy = clamp(S.oy, -my, my); S.vy = 0; }
+}
+function applySlide(S){
+  var sc = S.z*(1 + S.kb);
+  S.wrap.style.transform = 'perspective(1600px) translate3d(' + S.ox.toFixed(2) + 'px,' + S.oy.toFixed(2) + 'px,0) rotateY(' + (S.tx*2.4).toFixed(3) + 'deg) rotateX(' + (-S.ty*1.8).toFixed(3) + 'deg) scale(' + sc.toFixed(4) + ')';
+  S.hsBox.style.setProperty('--inv', (1/sc).toFixed(4));
+  S.el.style.opacity = S.op;
+}
+
+/* ---------- hotspots ---------- */
+function buildHotspots(S){
+  S.hs.forEach(function(o){
+    var h = o.h, el = document.createElement('button'); el.type = 'button';
+    el.style.left = (h.x*100) + '%'; el.style.top = (h.y*100) + '%';
+    if (h.tipo === 'vista'){
+      var nome = h.rotulo || views[h.destino].nome;
+      el.className = 'hs hs-nav' + (h.x > 0.7 ? ' flip' : ''); el.setAttribute('aria-label', 'Ir para ' + nome);
+      el.innerHTML = '<span class="hs-in"><span class="ring"></span><span class="label"><i>→</i>' + nome + '</span></span>';
+      el.addEventListener('click', function(e){ e.stopPropagation(); if (!moved) goTo(h.destino, o); });
+    } else {
+      el.className = 'hs hs-info'; el.setAttribute('aria-label', h.titulo);
+      el.innerHTML = '<span class="hs-in"><span class="ring"></span><span class="dot"></span></span>';
+      el.addEventListener('click', function(e){ e.stopPropagation(); if (!moved) openPop(o); });
+    }
+    el.addEventListener('pointerdown', function(e){ e.stopPropagation(); moved = false; });
+    S.hsBox.appendChild(el); o.el = el;
+  });
+}
+
+/* ---------- popup ---------- */
+var pop = $('#pop'), popO = null;
+function openPop(o){
+  if (popO === o){ closePop(); return; }
+  closePop();
+  $('#popK').textContent = cur.v.nome;
+  $('#popT').textContent = o.h.titulo;
+  $('#popD').textContent = o.h.texto || '';
+  var img = $('#popI');
+  if (o.h.imagem){ img.src = o.h.imagem; img.alt = o.h.titulo; img.hidden = false; } else { img.hidden = true; img.removeAttribute('src'); }
+  popO = o; o.el.classList.add('active');
+  positionPop(); pop.classList.add('on');
+}
+function closePop(){ if (!popO) return; popO.el.classList.remove('active'); popO = null; pop.classList.remove('on'); }
+function positionPop(){
+  if (!popO) return;
+  if (window.innerWidth <= 720){ pop.style.left = ''; pop.style.top = ''; return; }
+  var r = popO.el.getBoundingClientRect(), sx = r.left + r.width/2, sy = r.top + r.height/2;
+  var w = pop.offsetWidth, h = pop.offsetHeight, W = window.innerWidth, H = window.innerHeight;
+  if (sx < -20 || sx > W + 20 || sy < -20 || sy > H + 20){ closePop(); return; }
+  var x = sx + 26; if (x + w > W - 24) x = sx - 26 - w;
+  var y = clamp(sy - 28, 96, H - h - 96);
+  pop.style.left = Math.round(x) + 'px'; pop.style.top = Math.round(y) + 'px';
+}
+$('#popX').addEventListener('click', closePop);
+
+/* ---------- navegação inferior ---------- */
+var navList = $('#navList');
+TOUR.navegacao.forEach(function(n){
+  var li = document.createElement('li'), b = document.createElement('button');
+  b.type = 'button'; b.textContent = n.rotulo; b.dataset.inclui = (n.inclui || [n.destino]).join(' ');
+  b.addEventListener('click', function(){ goTo(n.destino); });
+  li.appendChild(b); navList.appendChild(li);
+});
+function updateUI(){
+  var id = cur.v.id;
+  navList.querySelectorAll('button').forEach(function(b){
+    var on = b.dataset.inclui.split(' ').indexOf(id) > -1;
+    b.setAttribute('aria-current', on ? 'true' : 'false');
+    if (on && window.innerWidth <= 720 && b.scrollIntoView) b.scrollIntoView({ inline:'center', block:'nearest', behavior: REDUCE ? 'auto' : 'smooth' });
+  });
+  $('#bRoom').textContent = cur.v.nome;
+  $('#bDeg').textContent = 'Vista ' + pad(cur.v.n) + ' de ' + pad(TOTAL);
+  $('#planHere').textContent = cur.v.nome;
+  refreshPlan();
+}
+
+/* ---------- transições ---------- */
+var cur = null, inc = null, tr = null;
+var caption = $('#caption'), capTimer;
+function showCaption(v){
+  $('#capK').textContent = (areas[v.area] ? areas[v.area].nome : 'Ambiente') + ' · ' + pad(v.n) + '/' + pad(TOTAL);
+  $('#capN').textContent = v.nome;
+  caption.classList.add('on'); clearTimeout(capTimer);
+  capTimer = setTimeout(function(){ caption.classList.remove('on'); }, 1800);
+}
+var prog = $('#progress');
+function goTo(id, from){
+  if (tr || !cur || id === cur.v.id || !views[id]) return;
+  closePop(); closeOverlays(); auto = false;
+  if (!imgs[id]) prog.classList.add('on');
+  loadView(id, function(im){
+    prog.classList.remove('on');
+    if (tr) return;
+    inc = makeSlide(views[id], im);
+    inc.op = 0; inc.z = inc.zFill*(REDUCE ? 1 : 1.14); inc.zT = inc.zFill; applySlide(inc);
+    cur.el.classList.add('leaving');
+    // aproxima em direção ao ponto clicado, como quem caminha até lá
+    var fx = 0, fy = 0;
+    if (from){ var sc = cur.z*(1 + cur.kb); fx = (from.h.x - 0.5)*cur.w*sc + cur.ox; fy = (from.h.y - 0.5)*cur.h*sc + cur.oy; }
+    tr = { t0:performance.now(), dur: REDUCE ? 300 : 1250, z0:cur.z, ox0:cur.ox, oy0:cur.oy, fx:fx, fy:fy };
+    showCaption(views[id]);
+  });
+}
+function ease(x){ return x < .5 ? 4*x*x*x : 1 - Math.pow(-2*x + 2, 3)/2; }
+function stepTransition(now){
+  if (!tr) return;
+  var p = Math.min(1, (now - tr.t0)/tr.dur), a = ease(Math.min(1, p/0.8)), k = REDUCE ? 0 : 0.45*a;
+  // zoom em torno do ponto (fx, fy) da tela
+  var z1 = tr.z0*(1 + k), r = z1/tr.z0;
+  cur.z = z1; cur.ox = tr.fx - (tr.fx - tr.ox0)*r; cur.oy = tr.fy - (tr.fy - tr.oy0)*r;
+  cur.op = 1 - ease(clamp((p - 0.25)/0.6, 0, 1))*0.999;
+  inc.op = ease(clamp((p - 0.2)/0.55, 0, 1));
+  inc.z = inc.zFill*((REDUCE ? 1 : 1.14) - (REDUCE ? 0 : 0.14)*ease(clamp((p - 0.2)/0.8, 0, 1)));
+  if (p >= 1){
+    cur.el.remove();
+    cur = inc; inc = null; tr = null;
+    cur.op = 1; cur.z = cur.zT = cur.zFill;
+    updateUI();
+  }
+}
+function jumpTo(id){
+  if (!views[id] || (cur && cur.v.id === id)) return;
+  loadView(id, function(im){
+    if (cur) cur.el.remove();
+    cur = makeSlide(views[id], im); cur.z = cur.zFill*1.06; cur.zT = cur.zFill;
+    updateUI();
+  });
+}
+
+/* ---------- interação ---------- */
+var pointers = new Map(), drag = null, pinch = null, editMode = false, auto = true, moved = false;
+var mouse = { x:0, y:0, on:false };
+stage.addEventListener('pointerdown', function(e){
+  if (!cur || tr) return;
+  stage.setPointerCapture(e.pointerId);
+  pointers.set(e.pointerId, { x:e.clientX, y:e.clientY });
+  auto = false; hideHint(); moved = false;
+  if (pointers.size === 1){ drag = { lx:e.clientX, ly:e.clientY, lt:performance.now(), moved:0 }; cur.vx = cur.vy = 0; }
+  else if (pointers.size === 2){ var pts = Array.from(pointers.values()); pinch = { d:dist(pts), z:cur.zT, cx:(pts[0].x + pts[1].x)/2, cy:(pts[0].y + pts[1].y)/2 }; drag = null; }
+});
+function dist(p){ return Math.hypot(p[0].x - p[1].x, p[0].y - p[1].y); }
+stage.addEventListener('pointermove', function(e){
+  if (e.pointerType === 'mouse'){ mouse.x = e.clientX/window.innerWidth*2 - 1; mouse.y = e.clientY/window.innerHeight*2 - 1; mouse.on = true; }
+  if (!pointers.has(e.pointerId) || !cur) return;
+  pointers.set(e.pointerId, { x:e.clientX, y:e.clientY });
+  if (pinch && pointers.size >= 2){
+    var pts = Array.from(pointers.values());
+    zoomAt(pinch.z*dist(pts)/Math.max(1, pinch.d), pinch.cx, pinch.cy, true); return;
+  }
+  if (!drag || tr) return;
+  var dx = e.clientX - drag.lx, dy = e.clientY - drag.ly, now = performance.now();
+  drag.moved += Math.abs(dx) + Math.abs(dy);
+  if (drag.moved > 5){ moved = true; body.classList.add('is-dragging'); stage.classList.add('dragging'); }
+  cur.ox += dx; cur.oy += dy;
+  var dt = Math.max(now - drag.lt, 1);
+  cur.vx = dx/dt*16; cur.vy = dy/dt*16;
+  drag.lx = e.clientX; drag.ly = e.clientY; drag.lt = now;
+});
+stage.addEventListener('pointerleave', function(e){ if (e.pointerType === 'mouse') mouse.on = false; });
+function endPointer(e){
+  if (!pointers.has(e.pointerId)) return;
+  pointers.delete(e.pointerId);
+  if (pointers.size < 2) pinch = null;
+  if (drag && pointers.size === 0){
+    if (performance.now() - drag.lt > 80 && cur){ cur.vx = cur.vy = 0; }
+    if (drag.moved <= 5 && e.type === 'pointerup') tapAt(e.clientX, e.clientY);
+    drag = null;
+  }
+  body.classList.remove('is-dragging'); stage.classList.remove('dragging'); wake();
+  setTimeout(function(){ moved = false; }, 0);
+}
+stage.addEventListener('pointerup', endPointer);
+stage.addEventListener('pointercancel', endPointer);
+stage.addEventListener('wheel', function(e){ e.preventDefault(); if (!cur || tr) return; auto = false; zoomAt(cur.zT*Math.pow(1.0016, -e.deltaY), e.clientX, e.clientY); }, { passive:false });
+stage.addEventListener('dblclick', function(e){ if (!cur || tr) return; zoomAt(cur.zT > cur.zFill*1.3 ? cur.zFill : cur.zFill*2, e.clientX, e.clientY); });
+/* zoom mantendo o ponto (px, py) da tela no lugar */
+function zoomAt(z, px, py, instant){
+  if (!cur) return;
+  z = clamp(z, 1, cur.zMax);
+  var cx = px - window.innerWidth/2, cy = py - window.innerHeight/2;
+  cur.zoomAnchor = { cx:cx, cy:cy };
+  cur.zT = z; if (instant) stepZoom(cur, 1);
+}
+function stepZoom(S, k){
+  if (Math.abs(S.zT - S.z) < 1e-4) { S.z = S.zT; return; }
+  var z1 = S.z + (S.zT - S.z)*k, r = z1/S.z, a = S.zoomAnchor || { cx:0, cy:0 };
+  S.ox = a.cx - (a.cx - S.ox)*r; S.oy = a.cy - (a.cy - S.oy)*r; S.z = z1;
+}
+function tapAt(x, y){
+  if (popO){ closePop(); return; }
+  if (!editMode || !cur) return;
+  var r = cur.img.getBoundingClientRect();
+  showToast('x: ' + ((x - r.left)/r.width).toFixed(3) + ', y: ' + ((y - r.top)/r.height).toFixed(3));
+}
+
+$('#zin').addEventListener('click', function(){ if (cur){ auto = false; zoomAt(cur.zT*1.35, window.innerWidth/2, window.innerHeight/2); } });
+$('#zout').addEventListener('click', function(){ if (cur){ auto = false; zoomAt(cur.zT/1.35, window.innerWidth/2, window.innerHeight/2); } });
+var fsBtn = $('#fs');
+if (!document.fullscreenEnabled && !document.webkitFullscreenEnabled) fsBtn.hidden = true;
+fsBtn.addEventListener('click', toggleFs);
+function toggleFs(){
+  try {
+    if (document.fullscreenElement || document.webkitFullscreenElement){ (document.exitFullscreen || document.webkitExitFullscreen).call(document); }
+    else { var r = (document.documentElement.requestFullscreen || document.documentElement.webkitRequestFullscreen).call(document.documentElement); if (r && r.catch) r.catch(function(){}); }
+  } catch(e){}
+}
+window.addEventListener('resize', function(){ if (cur){ var r = cur.zT/cur.zFill; layoutSlide(cur); cur.zT = cur.z = cur.zFill*r; clampPan(cur); } if (inc) layoutSlide(inc); });
+
+/* ---------- maquete 3D ---------- */
+var m3dBtn = $('#m3dBtn');
+function open3D(){
+  if (!cur || tr || typeof Maquete === 'undefined') return;
+  closePop(); closeOverlays(); auto = false;
+  var ok = Maquete.open(cur.v.id, function(id){
+    jumpTo(id); body.classList.remove('in3d'); showCaption(views[id]); m3dBtn.setAttribute('aria-expanded', 'false');
+  });
+  if (ok){ body.classList.add('in3d'); m3dBtn.setAttribute('aria-expanded', 'true'); }
+}
+function close3D(){ if (typeof Maquete !== 'undefined' && Maquete.isOpen()){ Maquete.close(); body.classList.remove('in3d'); m3dBtn.setAttribute('aria-expanded', 'false'); } }
+if (typeof Maquete === 'undefined' || !Maquete.supported()) m3dBtn.hidden = true;
+m3dBtn.addEventListener('click', open3D);
+$('#m3dClose').addEventListener('click', close3D);
+
+/* ---------- planta ---------- */
+var planOv = $('#planOv'), aboutOv = $('#aboutOv'), planBtn = $('#planBtn'), lastFocus = null;
+var NS = 'http://www.w3.org/2000/svg', planSvg = $('#plan'), marker, cone, areaEls = {}, vpEls = {};
+function el(tag, attrs, parent){ var e = document.createElementNS(NS, tag); for (var k in attrs) e.setAttribute(k, attrs[k]); if (parent) parent.appendChild(e); return e; }
+function txt(parent, x, y, s, attrs){ var a = { x:x, y:y, 'text-anchor':'middle', 'dominant-baseline':'middle' }; for (var k in attrs) a[k] = attrs[k]; var t = el('text', a, parent); t.textContent = s; return t; }
+function buildPlan(){
+  var PL = TOUR.planta, O = PL.contorno, m = 1.2;
+  planSvg.setAttribute('viewBox', (O.x - m) + ' ' + (O.y - m) + ' ' + (O.w + 2*m) + ' ' + (O.h + 2*m));
+  var defs = el('defs', {}, planSvg);
+  var pat = el('pattern', { id:'hatch', width:'.3', height:'.3', patternUnits:'userSpaceOnUse', patternTransform:'rotate(45)' }, defs);
+  el('path', { d:'M0 0V.3', stroke:'rgba(236,233,227,.1)', 'stroke-width':'.025' }, pat);
+  var g = el('g', {}, planSvg);
+  PL.extras.forEach(function(x){
+    var cx = x.x + x.w/2, cy = x.y + x.h/2;
+    el('rect', { x:x.x, y:x.y, width:x.w, height:x.h, fill:'url(#hatch)', stroke:'rgba(236,233,227,.2)', 'stroke-width':'.03' }, g);
+    txt(g, cx, cy, x.nome.toUpperCase(), { fill:'rgba(236,233,227,.34)', 'font-size':'.26', 'letter-spacing':'.06', transform:'rotate(-90 ' + cx + ' ' + cy + ')' });
+  });
+  PL.areas.forEach(function(a){
+    var r = el('g', { class:'pl-room', tabindex:'0', role:'button', 'aria-label':'Ir para ' + a.nome }, g);
+    el('rect', { x:a.x, y:a.y, width:a.w, height:a.h, 'stroke-width':'.035' }, r);
+    txt(r, a.x + a.w/2, a.y + 0.5, a.nome.toUpperCase(), { class:'n' });
+    function go(){ closeOverlays(); setTimeout(function(){ goTo(a.destino); }, 260); }
+    r.addEventListener('click', go);
+    r.addEventListener('keydown', function(e){ if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); go(); } });
+    areaEls[a.id] = r;
+  });
+  var fg = el('g', { style:'pointer-events:none' }, planSvg);
+  PL.moveis.forEach(function(f){ el('rect', { x:f.x, y:f.y, width:f.w, height:f.h, rx:f.r || 0, fill:'rgba(236,233,227,.04)', stroke:'rgba(236,233,227,.32)', 'stroke-width':'.022' }, fg); });
+  el('rect', { x:O.x, y:O.y, width:O.w, height:O.h, fill:'none', stroke:'#ece9e3', 'stroke-width':'.09' }, fg);
+  if (PL.janela){
+    var j = PL.janela;
+    el('rect', { x:j.x1, y:O.y - 0.06, width:j.x2 - j.x1, height:.12, fill:'#0a0a0b', stroke:'#ece9e3', 'stroke-width':'.02' }, fg);
+    el('path', { d:'M' + j.x1 + ' ' + O.y + 'H' + j.x2, stroke:'#ece9e3', 'stroke-width':'.015' }, fg);
+    txt(fg, (j.x1 + j.x2)/2, O.y - 0.5, 'JANELA', { fill:'rgba(236,233,227,.4)', 'font-size':'.22', 'letter-spacing':'.05', style:'font-family:IBM Plex Mono,monospace' });
+  }
+  if (PL.porta){
+    var d = PL.porta, len = d.y2 - d.y1, my = (d.y1 + d.y2)/2;
+    el('rect', { x:d.x - 0.06, y:d.y1, width:.12, height:len, fill:'#0a0a0b' }, fg);
+    el('path', { d:'M' + d.x + ' ' + d.y1 + 'L' + (d.x - len) + ' ' + d.y1 + 'A' + len + ' ' + len + ' 0 0 0 ' + d.x + ' ' + d.y2, fill:'none', stroke:'rgba(236,233,227,.45)', 'stroke-width':'.02' }, fg);
+    txt(fg, d.x + 0.5, my, 'ENTRADA', { fill:'rgba(236,233,227,.4)', 'font-size':'.2', transform:'rotate(90 ' + (d.x + 0.5) + ' ' + my + ')', style:'font-family:IBM Plex Mono,monospace' });
+  }
+  marker = el('g', { style:'pointer-events:none' }, planSvg);
+  cone = el('path', { fill:'rgba(236,233,227,.18)', stroke:'rgba(236,233,227,.5)', 'stroke-width':'.02' }, marker);
+  var vg = el('g', {}, planSvg);
+  TOUR.vistas.forEach(function(v){
+    if (!v.planta) return;
+    var p = el('g', { class:'pl-vp', tabindex:'0', role:'button', 'aria-label':'Vista ' + v.n + ': ' + v.nome, transform:'translate(' + v.planta.x + ' ' + v.planta.y + ')' }, vg);
+    el('circle', { r:'.27' }, p);
+    txt(p, 0, .02, pad(v.n), { class:'num' });
+    function go(){ closeOverlays(); setTimeout(function(){ goTo(v.id); }, 260); }
+    p.addEventListener('click', go);
+    p.addEventListener('keydown', function(e){ if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); go(); } });
+    vpEls[v.id] = p;
+  });
+}
+function refreshPlan(){
+  for (var id in areaEls) areaEls[id].classList.toggle('cur', id === cur.v.area);
+  for (var vid in vpEls) vpEls[vid].classList.toggle('cur', vid === cur.v.id);
+}
+function updateMarker(){
+  var v = cur.v; if (!v.planta) return;
+  var fov = (v.fov || 80)*Math.PI/180, hf = fov/2, R = 2.3;
+  var sc = cur.z*(1 + cur.kb), look = -cur.ox/(cur.w*sc)*(v.fov || 80);
+  cone.setAttribute('d', 'M0 0L' + (R*Math.cos(-hf)).toFixed(3) + ' ' + (R*Math.sin(-hf)).toFixed(3) + 'A' + R + ' ' + R + ' 0 0 1 ' + (R*Math.cos(hf)).toFixed(3) + ' ' + (R*Math.sin(hf)).toFixed(3) + 'Z');
+  marker.setAttribute('transform', 'translate(' + v.planta.x + ' ' + v.planta.y + ') rotate(' + (v.planta.dir + look).toFixed(1) + ')');
+}
+function openOverlay(ov){
+  closePop(); lastFocus = document.activeElement;
+  ov.classList.add('on'); body.classList.remove('is-idle');
+  if (ov === planOv){ planBtn.setAttribute('aria-expanded', 'true'); updateMarker(); }
+  setTimeout(function(){ var c = ov.querySelector('[data-close]'); if (c) c.focus(); }, 60);
+}
+function closeOverlays(){
+  var was = planOv.classList.contains('on') || aboutOv.classList.contains('on');
+  planOv.classList.remove('on'); aboutOv.classList.remove('on');
+  planBtn.setAttribute('aria-expanded', 'false');
+  if (was && lastFocus && lastFocus.focus){ try { lastFocus.focus({ preventScroll:true }); } catch(e){} }
+  lastFocus = null;
+}
+planBtn.addEventListener('click', function(){ planOv.classList.contains('on') ? closeOverlays() : openOverlay(planOv); });
+$('#info').addEventListener('click', function(){ openOverlay(aboutOv); });
+document.querySelectorAll('[data-close]').forEach(function(b){ b.addEventListener('click', closeOverlays); });
+[planOv, aboutOv].forEach(function(o){ o.addEventListener('click', function(e){ if (e.target === o) closeOverlays(); }); });
+
+/* ---------- teclado, edição, ociosidade ---------- */
+document.addEventListener('keydown', function(e){
+  var k = e.key;
+  if (k === 'Escape'){ if (body.classList.contains('in3d')) close3D(); else if (popO) closePop(); else closeOverlays(); return; }
+  if (!started || !cur) return;
+  if (k === 'm' || k === 'M'){ body.classList.contains('in3d') ? close3D() : open3D(); return; }
+  if (body.classList.contains('in3d')) return;
+  var W = window.innerWidth, H = window.innerHeight;
+  if (k === 'p' || k === 'P'){ planOv.classList.contains('on') ? closeOverlays() : openOverlay(planOv); }
+  else if (k === 'i' || k === 'I'){ openOverlay(aboutOv); }
+  else if (k === 'f' || k === 'F'){ toggleFs(); }
+  else if (k === 'e' || k === 'E'){ setEdit(!editMode); }
+  else if (k === '+' || k === '='){ zoomAt(cur.zT*1.35, W/2, H/2); }
+  else if (k === '-'){ zoomAt(cur.zT/1.35, W/2, H/2); }
+  else if (k === 'ArrowLeft'){ cur.vx = 14; auto = false; }
+  else if (k === 'ArrowRight'){ cur.vx = -14; auto = false; }
+  else if (k === 'ArrowUp'){ cur.vy = 14; auto = false; }
+  else if (k === 'ArrowDown'){ cur.vy = -14; auto = false; }
+  wake();
+});
+function setEdit(on){ editMode = on; $('#editBadge').hidden = !on; }
+if (location.hash === '#editar') setEdit(true);
+window.addEventListener('hashchange', function(){ setEdit(location.hash === '#editar'); });
+
+var toast = $('#toast'), toastTimer;
+function showToast(t){
+  $('#toastT').textContent = t; $('#toastB').textContent = 'Copiar';
+  toast.classList.add('on'); clearTimeout(toastTimer);
+  toastTimer = setTimeout(function(){ toast.classList.remove('on'); }, 6000);
+}
+$('#toastB').addEventListener('click', function(){
+  var t = $('#toastT').textContent, b = this;
+  function sel(){ var r = document.createRange(); r.selectNodeContents($('#toastT')); var s = getSelection(); s.removeAllRanges(); s.addRange(r); }
+  try { navigator.clipboard.writeText(t).then(function(){ b.textContent = 'Copiado'; }, sel); } catch(e){ sel(); }
+});
+
+var idleTimer;
+function wake(){
+  body.classList.remove('is-idle'); clearTimeout(idleTimer);
+  idleTimer = setTimeout(function(){ if (!planOv.classList.contains('on') && !aboutOv.classList.contains('on') && !popO) body.classList.add('is-idle'); }, 3600);
+}
+window.addEventListener('pointermove', function(e){ if (e.pointerType === 'mouse') wake(); });
+window.addEventListener('pointerdown', wake);
+var hint = $('#hint');
+function hideHint(){ hint.classList.remove('on'); }
+
+/* ---------- abertura ---------- */
+var started = false;
+function introProgress(){ $('#load i').style.transform = 'scaleX(' + Math.min(1, loaded/TOTAL) + ')'; }
+loadView(TOUR.inicio, function(im){
+  cur = makeSlide(views[TOUR.inicio], im);
+  cur.z = cur.zT = cur.zFill*1.08;
+  updateUI();
+  setTimeout(function(){ $('#load').classList.add('done'); $('#enter').classList.add('on'); }, 500);
+  TOUR.vistas.forEach(function(v){ loadView(v.id); });
+});
+$('#enter').addEventListener('click', function(){
+  if (started || !cur) return; started = true;
+  $('#intro').classList.add('leave');
+  cur.z = cur.zFill*(REDUCE ? 1 : 1.18); cur.zT = cur.zFill;
+  showCaption(cur.v);
+  setTimeout(function(){ if (auto){ hint.classList.add('on'); setTimeout(hideHint, 4000); } }, 2200);
+  wake();
+});
+
+/* ---------- loop ---------- */
+var last = performance.now(), t0 = performance.now();
+function frame(now){
+  var dt = Math.min(64, now - last); last = now;
+  if (cur){
+    var S = cur;
+    if (!tr){
+      if (!drag && !pinch){
+        S.ox += S.vx*dt/16; S.oy += S.vy*dt/16;
+        var damp = Math.pow(0.92, dt/16); S.vx *= damp; S.vy *= damp;
+        if (Math.abs(S.vx) < 0.01) S.vx = 0; if (Math.abs(S.vy) < 0.01) S.vy = 0;
+      }
+      stepZoom(S, Math.min(1, dt/(started ? 120 : 900)));
+      // perspectiva que acompanha o mouse (computador) ou deriva lenta (celular / sem interação)
+      var tt = (now - t0)/1000;
+      if (FINE && mouse.on && !drag && !editMode){ S.txT = mouse.x; S.tyT = mouse.y; }
+      else if (auto && !REDUCE){ S.txT = Math.sin(tt*0.22)*0.6; S.tyT = Math.sin(tt*0.15 + 1)*0.35; }
+      else { S.txT = 0; S.tyT = 0; }
+      if (REDUCE){ S.txT = S.tyT = 0; }
+      S.tx += (S.txT - S.tx)*Math.min(1, dt/420); S.ty += (S.tyT - S.ty)*Math.min(1, dt/420);
+      // respiração suave da imagem
+      S.kb = (REDUCE || !started) ? 0 : 0.012 + 0.012*Math.sin(tt*0.18);
+      // no celular, sem interação, desliza devagar pela imagem
+      if (auto && !REDUCE && started && !FINE){ var mx = Math.max(0, (S.w*S.z*(1 + S.kb) - window.innerWidth)/2); S.ox += (Math.sin(tt*0.12)*mx*0.85 - S.ox)*0.02; }
+      clampPan(S);
+    }
+    stepTransition(now);
+    applySlide(S);
+    if (inc) applySlide(inc);
+    positionPop();
+    if (planOv.classList.contains('on')) updateMarker();
+  }
+  requestAnimationFrame(frame);
+}
+buildPlan();
+requestAnimationFrame(frame);
+
+function fail(msg){ var d = document.createElement('div'); d.className = 'error'; d.textContent = msg; document.body.appendChild(d); }
+})();
+
+</script>
+</body>
+</html>

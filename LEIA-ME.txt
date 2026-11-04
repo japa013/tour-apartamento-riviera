@@ -1,0 +1,22 @@
+TOUR VIRTUAL — APARTAMENTO RIVIERA
+Desenvolvido por Vitório Publicidade
+
+COMO PUBLICAR (mais rápido, grátis)
+1. Acesse https://app.netlify.com/drop
+2. Arraste a pasta inteira (com index.html, fotos e img) para a página.
+3. Pronto: o site fica no ar com um endereço próprio. Crie uma conta grátis para mantê-lo e trocar o nome do endereço.
+
+OUTRAS OPÇÕES
+- Hospedagem própria (Hostinger, HostGator, Locaweb etc.): envie o conteúdo desta pasta para a pasta public_html pelo Gerenciador de Arquivos.
+- Domínio próprio: ex. tour.projectsarquitetura.com.br, apontado para a hospedagem.
+- Dentro de um site já existente (WordPress, Wix...): publique esta pasta e insira com um bloco HTML:
+  <iframe src="ENDERECO-DO-TOUR" style="width:100%;height:85vh;border:0" allow="fullscreen" allowfullscreen></iframe>
+
+ATENÇÃO
+- Mantenha a estrutura: index.html, pasta "fotos" e pasta "img" juntos.
+- Abrir o index.html direto do computador (duplo clique) funciona, mas o certo é testar já publicado.
+
+COMO EDITAR
+- Textos, hotspots, planta e pontos de vista: abra index.html num editor de texto e procure "CADASTRO DO TOUR".
+- Trocar fotos: substitua os arquivos em /fotos mantendo os mesmos nomes (ou altere o caminho no cadastro).
+- Descobrir a posição de um hotspot: abra o tour com #editar no fim do endereço e clique na imagem.
