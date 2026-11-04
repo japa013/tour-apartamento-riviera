@@ -48,8 +48,8 @@ button:focus-visible,[tabindex]:focus-visible{outline:1px solid var(--bone);outl
 #stage{overflow:hidden}
 .slide{position:absolute;inset:0;will-change:opacity}
 .slide-bg{position:absolute;inset:-80px;background-size:cover;background-position:center;filter:blur(40px) brightness(.5) saturate(1.15);transform:scale(1.08)}
-.slide-img{position:absolute;left:50%;top:50%;transform-origin:50% 50%;will-change:transform;box-shadow:0 40px 120px rgba(0,0,0,.5)}
-.slide-img img{display:block;width:100%;height:100%;user-select:none;-webkit-user-select:none;-webkit-user-drag:none;pointer-events:none}
+.slide-img{position:absolute;left:50%;top:50%;transform-origin:50% 50%;box-shadow:0 40px 120px rgba(0,0,0,.5);backface-visibility:hidden}
+.slide-img img{display:block;width:100%;height:100%;image-rendering:auto;user-select:none;-webkit-user-select:none;-webkit-user-drag:none;pointer-events:none}
 .slide-hs{position:absolute;inset:0;transition:opacity .4s var(--ease)}
 .slide-hs .hs{transform:scale(var(--inv,1));will-change:auto}
 .hs-in{position:relative;width:100%;height:100%;display:grid;place-items:center}
@@ -1335,12 +1335,13 @@ function makeSlide(v, im){
 function layoutSlide(S){
   var vw = window.innerWidth, vh = window.innerHeight, ia = S.iw/S.ih;
   var contain = Math.min(vw/S.iw, vh/S.ih), cover = Math.max(vw/S.iw, vh/S.ih);
-  // zoom 1 = foto inteira na tela; zFill = foto preenchendo a tela toda (padrão)
-  S.base = contain; S.zFill = cover/contain;
+  // a imagem é desenhada já no tamanho de tela cheia (zoom 1), para o navegador não esticar uma versão pequena.
+  // zMin = foto inteira visível; zFill = tela cheia (padrão)
+  S.base = cover; S.zFill = 1; S.zMin = contain/cover;
   S.w = S.iw*S.base; S.h = S.ih*S.base;
   S.wrap.style.width = S.w + 'px'; S.wrap.style.height = S.h + 'px';
   S.wrap.style.marginLeft = (-S.w/2) + 'px'; S.wrap.style.marginTop = (-S.h/2) + 'px';
-  S.zMax = S.zFill*3;
+  S.zMax = 3;
 }
 /* centraliza o ponto de foco da foto (TOUR.vistas[].foco) */
 function focusAt(S){ var f = S.v.foco || { x:0.5, y:0.5 }, sc = S.z*(1 + S.kb); return { x:-(f.x - 0.5)*S.w*sc, y:-(f.y - 0.5)*S.h*sc }; }
@@ -1529,7 +1530,7 @@ stage.addEventListener('dblclick', function(e){ if (!cur || tr) return; zoomAt(c
 /* zoom mantendo o ponto (px, py) da tela no lugar */
 function zoomAt(z, px, py, instant){
   if (!cur) return;
-  z = clamp(z, 1, cur.zMax);
+  z = clamp(z, cur.zMin, cur.zMax);
   var cx = px - window.innerWidth/2, cy = py - window.innerHeight/2;
   cur.zoomAnchor = { cx:cx, cy:cy };
   cur.zT = z; if (instant) stepZoom(cur, 1);
